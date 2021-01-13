@@ -18,6 +18,8 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       role: DataTypes.STRING,
       avatar: DataTypes.STRING,
+      reset_token: DataTypes.STRING,
+      reset_expired: DataTypes.STRING,
     },
     {
       sequelize,
