@@ -1,5 +1,6 @@
+const bcrypt = require('bcrypt');
 
-
+const saltRounds = parseInt(process.env.SALT_ROUNDS, 10);
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     /**
@@ -11,13 +12,14 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
+    const password = await bcrypt.hash('password', saltRounds);
     await queryInterface.bulkInsert(
       'users',
       [
         {
           name: 'Ragil Burhanudin Pamungaks',
           email: 'ragil@sipamungkas.com',
-          password: 'password',
+          password,
           role: 'admin',
           created_at: new Date(),
           updated_at: new Date(),

@@ -19,6 +19,10 @@ module.exports = {
       role: {
         type: Sequelize.STRING,
       },
+      avatar: {
+        allowNull: true,
+        type: Sequelize.STRING,
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
