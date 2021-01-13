@@ -31,7 +31,13 @@ describe('API Test', () => {
         expect(res.body).to.have.property('meta');
         expect(res.body.meta).to.have.all.keys('message', 'code', 'status');
         expect(res.body).to.have.property('data');
-        expect(res.body.data).to.have.all.keys('id', 'name', 'email', 'token');
+        expect(res.body.data).to.have.all.keys(
+          'id',
+          'name',
+          'email',
+          'token',
+          'avatar',
+        );
         done();
       });
   });
