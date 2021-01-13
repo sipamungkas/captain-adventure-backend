@@ -22,7 +22,7 @@ describe('API Test', () => {
     chai
       .request(app)
       .post('/v1/users/session')
-      .send({email: 'ragil@sipamungkas.com', password: 'password'})
+      .send({email: 'om.ragil7@gmail.com', password: 'password'})
       .end((err, res) => {
         expect(err).to.be.null;
         expect(res).to.be.not.empty;
