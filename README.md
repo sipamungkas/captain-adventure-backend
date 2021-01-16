@@ -48,4 +48,4 @@ npx sequelize db:seed:all
 ```
 
 List of available email service chek this
-[SendInBlue](https://nodemailer.com/smtp/well-known/) documentation
+[NodeMailer](https://nodemailer.com/smtp/well-known/) documentation
