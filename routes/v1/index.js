@@ -1,9 +1,12 @@
 const express = require('express');
 const usersRouter = require('./users');
+const categoriesRouter = require('./categories');
 
 const router = express.Router();
 
 /* Users resources. */
 router.use('/users', usersRouter);
+// Categories reources.
+router.use('/categories', categoriesRouter);
 
 module.exports = router;

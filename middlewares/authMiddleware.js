@@ -6,7 +6,10 @@ const jwtSecret = process.env.JWT_SECRET;
 
 const authenticateToken = async (req, res, next) => {
   if (!req.headers.authorization) {
-    return res.json({message: 'Access denied!'}, 401);
+    const response = formatRes(
+      meta('Access denied!', 401, 'Unauthorized access'),
+    );
+    return res.status(401).json(response);
   }
   try {
     const {authorization} = req.headers;

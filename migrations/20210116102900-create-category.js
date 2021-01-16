@@ -1,6 +1,6 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable('categories', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,29 +11,15 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      password: {
+      slug: {
         allowNull: false,
+        unique: true,
         type: Sequelize.STRING,
       },
-      email: {
+      is_active: {
         allowNull: false,
-        type: Sequelize.STRING,
-      },
-      role: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      avatar: {
-        allowNull: true,
-        type: Sequelize.STRING,
-      },
-      reset_token: {
-        allowNull: true,
-        type: Sequelize.STRING,
-      },
-      reset_expired: {
-        allowNull: true,
-        type: Sequelize.STRING,
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
       },
       created_at: {
         allowNull: false,
@@ -46,6 +32,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable('categories');
   },
 };
