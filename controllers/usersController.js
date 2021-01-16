@@ -7,6 +7,7 @@ const mail = require('../services/mail');
 const {User} = require('../models');
 
 const jwtSecret = process.env.JWT_SECRET;
+const saltRounds = parseInt(process.env.SALT_ROUNDS);
 
 const getSession = async (req, res) => {
   try {
@@ -53,31 +54,34 @@ const forgotPassword = async (req, res) => {
     }
     const buffer = await crypto.randomBytes(20);
     const token = buffer.toString('hex');
-    // user = await User.update(
-    //   {
-    //     reset_token: token,
-    //     reset_expired: new Date().getTime() + 3 * 60 * 60 * 1000,
-    //   },
-    //   {
-    //     where: {
-    //       email,
-    //     },
-    //   },
-    // );
-    console.log('sending mail');
-    const mailStatus = await mail.sendResetLink(email, 'ragil', token);
+    await User.update(
+      {
+        reset_token: token,
+        reset_expired: new Date().getTime() + 3 * 60 * 60 * 1000,
+      },
+      {
+        where: {
+          email,
+        },
+      },
+    );
+
+    const mailStatus = await mail.sendResetLink(email, user.name, token);
     if (mailStatus === false) {
-      console.log('error');
-      return false;
+      const response = formatRes(meta('Service unavailable', 503, 'error'));
+      return res.status(503).json(response);
     }
+
     const data = {
       message:
         'An email has been sent to your email address containing an activation link. Please click on the link to activate your account. If you do not click the link your account will remain inactive and you will not receive further emails. If you do not receive the email within a few minutes, please check your spam folder.',
     };
+
     const response = formatRes(
       meta('Reset link has been sent', 200, 'success'),
       data,
     );
+
     return res.status(200).json(response);
   } catch (error) {
     const response = formatRes(
@@ -88,4 +92,43 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-module.exports = {getSession, forgotPassword};
+const resetPassword = async (req, res) => {
+  try {
+    const {token} = req.query;
+    const {password, verifyPassword} = req.body;
+    if (password !== verifyPassword) {
+      const response = formatRes(meta('Password did not match', 401, 'error'));
+      return res.status(401).json(response);
+    }
+
+    const user = await User.findOne({where: {reset_token: token}});
+    if (user === null) {
+      const response = formatRes(meta('Reset link invalid', 401, 'error'));
+      return res.status(401).json(response);
+    }
+
+    const today = new Date();
+    if (today > new Date(user.reset_expired)) {
+      const response = formatRes(meta('Link expired!', 403, 'error'));
+      return res.status(403).json(response);
+    }
+
+    const newPassword = await bcrypt.hash(password, saltRounds);
+    await user.update({
+      password: newPassword,
+      reset_token: null,
+      reset_expired: null,
+    });
+
+    const response = formatRes(meta('Password changed!', 200, 'success'));
+    return res.status(200).json(response);
+  } catch (error) {
+    const response = formatRes(
+      meta('Service unavailable', 503, 'error'),
+      error,
+    );
+    return res.status(503).json(response);
+  }
+};
+
+module.exports = {getSession, forgotPassword, resetPassword};

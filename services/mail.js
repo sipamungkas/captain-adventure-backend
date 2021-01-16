@@ -22,7 +22,7 @@ const sendResetLink = async (to, recipient, token) => {
       subject: 'Password Reset Link', // Subject line
       text: `
       Please click this link to reset your password!
-      ${BASE_URL}users/reset-pasword?id=${token}
+      ${BASE_URL}users/reset-pasword?token=${token}
       The link will expired in 3 hours
       `, // plain text body
       html: `
@@ -36,7 +36,7 @@ const sendResetLink = async (to, recipient, token) => {
         <body>
             <div>
                 <h3>Dear ${recipient},</h3>
-                <p>You requested for a password reset, kindly use this <a href="${BASE_URL}users/reset-pasword?id=${token}">link</a> to reset your password</p>
+                <p>You requested for a password reset, kindly use this <a href="${BASE_URL}users/reset-pasword?token=${token}">link</a> to reset your password</p>
                 <p>The link will expired in 3 hours</p>
                 <br>
                 <p>Cheers!</p>
@@ -46,7 +46,7 @@ const sendResetLink = async (to, recipient, token) => {
 
         </html>
         Copy this link to your addres if you can't click the link
-        ${BASE_URL}users/reset-pasword?id=${token}
+        ${BASE_URL}users/reset-pasword?token=${token}
       `, // html body
     });
     return info.messageId;

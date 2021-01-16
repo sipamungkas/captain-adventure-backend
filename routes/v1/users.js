@@ -3,6 +3,7 @@ const usersController = require('../../controllers/usersController');
 const {
   userSessionRules,
   forgotPasswordRules,
+  newPasswordRules,
 } = require('../../validators/usersValidator');
 const validate = require('../../validators/validate');
 
@@ -26,6 +27,13 @@ router.post(
   forgotPasswordRules(),
   validate,
   usersController.forgotPassword,
+);
+
+router.post(
+  '/reset-password',
+  newPasswordRules(),
+  validate,
+  usersController.resetPassword,
 );
 
 module.exports = router;
