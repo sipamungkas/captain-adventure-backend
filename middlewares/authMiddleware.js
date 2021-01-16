@@ -20,7 +20,7 @@ const authenticateToken = async (req, res, next) => {
       const response = formatRes(
         meta('Access denied!', 401, 'Unauthorized access'),
       );
-      return res.json(response);
+      return res.status(401).json(response);
     }
     req.user = user;
     return next();
@@ -28,10 +28,10 @@ const authenticateToken = async (req, res, next) => {
     const response = formatRes(
       meta('Access denied!', 401, 'Unauthorized access'),
     );
-    return res.json(response);
+    return res.status(401).json(response);
   }
 };
 
 const isAdmin = async (req, res, next) => {};
 
-module.export = {authenticateToken, isAdmin};
+module.exports = {authenticateToken, isAdmin};

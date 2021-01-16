@@ -6,6 +6,8 @@ const {
   newPasswordRules,
 } = require('../../validators/usersValidator');
 const validate = require('../../validators/validate');
+const {authenticateToken} = require('../../middlewares/authMiddleware');
+const {uploadAvatar} = require('../../middlewares/multerMiddleware');
 
 const router = express.Router();
 
@@ -34,6 +36,13 @@ router.post(
   newPasswordRules(),
   validate,
   usersController.resetPassword,
+);
+
+router.post(
+  '/avatars',
+  authenticateToken,
+  uploadAvatar.single('avatar'),
+  usersController.uploadAvatar,
 );
 
 module.exports = router;

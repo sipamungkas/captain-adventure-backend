@@ -1,13 +1,15 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const fs = require('fs-extra');
+const path = require('path');
 const {meta, formatRes} = require('../helper/formatter/responseFormatter');
 const {formatUser} = require('../helper/formatter/userFormatter');
 const mail = require('../services/mail');
 const {User} = require('../models');
 
 const jwtSecret = process.env.JWT_SECRET;
-const saltRounds = parseInt(process.env.SALT_ROUNDS);
+const saltRounds = parseInt(process.env.SALT_ROUNDS, 8);
 
 const getSession = async (req, res) => {
   try {
@@ -131,4 +133,24 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = {getSession, forgotPassword, resetPassword};
+const uploadAvatar = async (req, res) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    const pathFile = path.join(__dirname, `../public/${user.avatar}`);
+    const exists = await fs.pathExists(pathFile);
+    if (exists) {
+      await fs.unlink(pathFile);
+    }
+    await user.update({avatar: `avatars/${req.file.filename}`});
+    const response = formatRes(meta('Avatar uploaded!', 200, 'success'));
+    return res.status(200).json(response);
+  } catch (error) {
+    const response = formatRes(
+      meta('Service unavailable', 503, 'error'),
+      error,
+    );
+    return res.status(503).json(response);
+  }
+};
+
+module.exports = {getSession, forgotPassword, resetPassword, uploadAvatar};
