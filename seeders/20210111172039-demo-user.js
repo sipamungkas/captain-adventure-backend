@@ -18,7 +18,7 @@ module.exports = {
       [
         {
           name: 'Ragil Burhanudin Pamungaks',
-          email: 'ragil@sipamungkas.com',
+          email: 'om.ragil7@gmail.com',
           password,
           role: 'admin',
           created_at: new Date(),
