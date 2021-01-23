@@ -40,10 +40,10 @@ npm test
 Database Migration
 
 ```sh
-npx sequelize db:create //create database automatically from skip this if you want to create the databse manually
+npx sequelize-cli db:create //create database automatically from skip this if you want to create the databse manually
 
-npx sequelize db:migrate
-npx sequelize db:seed:all
+npx sequelize-cli db:migrate
+npx sequelize-cli db:seed:all
 
 ```
 
