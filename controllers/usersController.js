@@ -135,6 +135,10 @@ const resetPassword = async (req, res) => {
 
 const uploadAvatar = async (req, res) => {
   try {
+    if (!req.file) {
+      const response = formatRes(meta(`Invalid image type`, 422, 'error'));
+      return res.status(422).json(response);
+    }
     const user = await User.findByPk(req.user.id);
     const pathFile = path.join(__dirname, `../public/${user.avatar}`);
     const exists = await fs.pathExists(pathFile);
