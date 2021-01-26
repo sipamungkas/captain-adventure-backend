@@ -41,7 +41,7 @@ router.post(
 router.post(
   '/avatars',
   authenticateToken,
-  uploadAvatar.single('avatar'),
+  uploadAvatar,
   usersController.uploadAvatar,
 );
 

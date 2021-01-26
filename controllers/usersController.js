@@ -145,7 +145,7 @@ const uploadAvatar = async (req, res) => {
     if (exists) {
       await fs.unlink(pathFile);
     }
-    await user.update({avatar: `avatars/${req.file.filename}`});
+    await user.update({avatar: `images/avatars/${req.file.filename}`});
     const response = formatRes(meta('Avatar uploaded!', 200, 'success'));
     return res.status(200).json(response);
   } catch (error) {

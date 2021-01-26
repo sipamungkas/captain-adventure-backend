@@ -5,7 +5,6 @@ const {
   formatCategories,
   formatCategory,
 } = require('../helper/formatter/categoryFormatter');
-const sendError = require('../helper/formatter/error');
 
 const createCategory = async (req, res) => {
   try {
@@ -25,9 +24,14 @@ const createCategory = async (req, res) => {
     if (slugExists) {
       slug = `${slug}-${Math.floor(Math.random() * 1453 + 1)}`;
     }
-    const category = await Category.create({name, slug});
+    const category = await Category.create({
+      image: `images/categories/${req.file.filename}`,
+      name,
+      slug,
+    });
     if (category === null) {
-      return sendError;
+      const response = formatRes(meta('Service unavailable', 503, 'error'));
+      return res.status(503).json(response);
     }
     const response = formatRes(meta('Category created', 201, 'success'));
     return res.status(201).json(response);

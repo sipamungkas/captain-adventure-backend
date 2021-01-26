@@ -1,6 +1,6 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('categories', {
+    await queryInterface.createTable('packets', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -8,17 +8,25 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       image: {
+        allowNull: true,
+        type: Sequelize.STRING,
+      },
+      title: {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      name: {
-        allowNull: false,
-        type: Sequelize.STRING,
+      subtitle: {
+        allowNull: true,
+        type: Sequelize.STRING(100),
       },
       slug: {
         allowNull: false,
-        unique: true,
         type: Sequelize.STRING,
+        unique: true,
+      },
+      description: {
+        allowNull: false,
+        type: Sequelize.TEXT,
       },
       is_active: {
         allowNull: false,
@@ -36,6 +44,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('categories');
+    await queryInterface.dropTable('packets');
   },
 };

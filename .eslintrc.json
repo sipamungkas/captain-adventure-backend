@@ -24,6 +24,7 @@
         "no-underscore-dangle": "off",
         "import/no-dynamic-require" : "off",
         "global-require" : "off",
-        "radix" :"warn"
+        "radix" :"warn",
+        "camelcase":"warn"
     }
 }
