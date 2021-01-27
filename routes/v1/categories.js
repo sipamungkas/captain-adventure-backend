@@ -6,13 +6,15 @@ const {
 } = require('../../validators/categoriesValidator');
 const validate = require('../../validators/validate');
 const {authenticateToken} = require('../../middlewares/authMiddleware');
+const {uploadCategoryImage} = require('../../middlewares/multerMiddleware');
 
 const router = express.Router();
 
 router.post(
   '/',
   authenticateToken,
-  createCategoryRules(),
+  uploadCategoryImage,
+  createCategoryRules,
   validate,
   categoriesController.createCategory,
 );
@@ -22,7 +24,8 @@ router.get('/:id', authenticateToken, categoriesController.getCategory);
 router.put(
   '/:id',
   authenticateToken,
-  updateCategoryRules(),
+  uploadCategoryImage,
+  updateCategoryRules,
   validate,
   categoriesController.updateCategory,
 );

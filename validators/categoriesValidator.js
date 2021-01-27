@@ -1,6 +1,6 @@
 const {body, param} = require('express-validator');
 
-const createCategoryRules = () => [
+const createCategoryRules = [
   body('name')
     .notEmpty()
     .withMessage('Category Name can not be empty')
@@ -9,7 +9,7 @@ const createCategoryRules = () => [
     .withMessage('Category name min 3 characters'),
 ];
 
-const updateCategoryRules = () => [
+const updateCategoryRules = [
   param('id').notEmpty().withMessage('Category Id can not be empty').bail(),
   body('name')
     .notEmpty()

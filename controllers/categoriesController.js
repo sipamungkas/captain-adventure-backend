@@ -1,4 +1,6 @@
 const slugify = require('slugify');
+const fs = require('fs-extra');
+const path = require('path');
 const {Category} = require('../models');
 const {meta, formatRes} = require('../helper/formatter/responseFormatter');
 const {
@@ -8,6 +10,10 @@ const {
 
 const createCategory = async (req, res) => {
   try {
+    if (!req.file) {
+      const response = formatRes(meta(`Invalid image type`, 422, 'error'));
+      return res.status(422).json(response);
+    }
     const {name} = req.body;
     let slug = await slugify(name, {
       replacement: '-',
@@ -111,13 +117,6 @@ const updateCategory = async (req, res) => {
       return res.status(404).json(response);
     }
 
-    if (category.name === name) {
-      const response = formatRes(
-        meta('Category updated', 200, 'success'),
-        formatCategory(category),
-      );
-      return res.status(200).json(response);
-    }
     let slug = await slugify(name, {
       replacement: '-',
       lower: true,
@@ -135,7 +134,24 @@ const updateCategory = async (req, res) => {
       slug = `${slug}-${Math.floor(Math.random() * 1453 + 1)}`;
     }
 
-    const updatedData = await category.update({name, slug});
+    let newCategory = {
+      image: category.image,
+      name,
+      slug,
+    };
+    if (req.file) {
+      const pathFile = path.join(__dirname, `../public/${category.image}`);
+      const exists = await fs.pathExists(pathFile);
+      if (exists) {
+        await fs.unlink(pathFile);
+      }
+      newCategory = {
+        image: `images/categories/${req.file.filename}`,
+        name,
+        slug,
+      };
+    }
+    const updatedData = await category.update(newCategory);
     const response = formatRes(
       meta('Category updated', 200, 'success'),
       formatCategory(updatedData),
@@ -153,7 +169,18 @@ const updateCategory = async (req, res) => {
 const deleteCategory = async (req, res) => {
   try {
     const {id} = req.params;
-    await Category.destroy({where: {id}});
+    const category = await Category.findByPk(id);
+    if (category === null) {
+      const response = formatRes(meta('Page not found', 404, 'success'));
+      return res.status(404).json(response);
+    }
+
+    const pathFile = path.join(__dirname, `../public/${category.image}`);
+    const exists = await fs.pathExists(pathFile);
+    if (exists) {
+      await fs.unlink(pathFile);
+    }
+    await category.destroy();
     const response = formatRes(meta('Category deleted', 200, 'success'));
     return res.status(204).json(response);
   } catch (error) {

@@ -13,6 +13,7 @@ module.exports = {
       'categories',
       [
         {
+          image: 'images/categories/image.png',
           name: 'adventure',
           slug: 'adventure',
           is_active: true,
@@ -20,6 +21,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
+          image: 'images/categories/image.png',
           name: 'rafting',
           slug: 'rafting',
           is_active: true,

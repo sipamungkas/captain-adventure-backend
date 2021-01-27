@@ -1,6 +1,7 @@
 const formatCategory = (category) => {
   const formatter = {
     id: category.id,
+    image: category.image,
     name: category.name,
     slug: category.slug,
     is_active: category.is_active,
