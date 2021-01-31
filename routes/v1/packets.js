@@ -18,5 +18,12 @@ router.post(
 
 router.get('/', authenticateToken, packetsController.getPackets);
 router.get('/:id', authenticateToken, packetsController.getPacket);
+router.put(
+  '/:id',
+  authenticateToken,
+  uploadPacketImage,
+  packetsController.updatePacket,
+);
+router.delete('/:id', authenticateToken, packetsController.deletePacket);
 
 module.exports = router;
