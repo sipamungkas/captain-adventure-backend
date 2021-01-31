@@ -10,10 +10,6 @@ const {
 
 const createCategory = async (req, res) => {
   try {
-    if (!req.file) {
-      const response = formatRes(meta(`Invalid image type`, 422, 'error'));
-      return res.status(422).json(response);
-    }
     const {name} = req.body;
     let slug = await slugify(name, {
       replacement: '-',
@@ -30,11 +26,19 @@ const createCategory = async (req, res) => {
     if (slugExists) {
       slug = `${slug}-${Math.floor(Math.random() * 1453 + 1)}`;
     }
-    const category = await Category.create({
-      image: `images/categories/${req.file.filename}`,
+    let newCategory = {
+      image: null,
       name,
       slug,
-    });
+    };
+    if (req.file) {
+      newCategory = {
+        image: `images/categories/${req.file.filename}`,
+        name,
+        slug,
+      };
+    }
+    const category = await Category.create(newCategory);
     if (category === null) {
       const response = formatRes(meta('Service unavailable', 503, 'error'));
       return res.status(503).json(response);
@@ -65,6 +69,7 @@ const getCategories = async (req, res) => {
       offset: (page - 1) * perPage,
       limit: perPage,
       order: orderParameter,
+      include: ['packets'],
     });
     if (categories === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
@@ -77,6 +82,7 @@ const getCategories = async (req, res) => {
     );
     return res.status(200).json(response);
   } catch (error) {
+    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,

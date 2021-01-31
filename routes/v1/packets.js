@@ -16,4 +16,6 @@ router.post(
   packetsController.createPacket,
 );
 
+router.get('/', authenticateToken, packetsController.getPackets);
+
 module.exports = router;
