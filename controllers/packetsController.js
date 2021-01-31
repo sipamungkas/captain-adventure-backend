@@ -1,7 +1,12 @@
 const slugify = require('slugify');
+const fs = require('fs-extra');
+const path = require('path');
 const {Category, Packet} = require('../models');
 const {meta, formatRes} = require('../helper/formatter/responseFormatter');
-const {formatPackets} = require('../helper/formatter/packetFormatter');
+const {
+  formatPackets,
+  formatPacket,
+} = require('../helper/formatter/packetFormatter');
 
 const createPacket = async (req, res) => {
   try {
@@ -76,7 +81,7 @@ const getPackets = async (req, res) => {
       offset: (page - 1) * perPage,
       limit: perPage,
       order: orderParameter,
-      include: 'Category',
+      include: 'category',
     });
     if (packets === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
@@ -97,4 +102,132 @@ const getPackets = async (req, res) => {
   }
 };
 
-module.exports = {createPacket, getPackets};
+const getPacket = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const packet = await Packet.findByPk(id, {include: 'category'});
+    if (packet === null) {
+      const response = formatRes(meta('Page not found', 404, 'success'));
+      return res.status(404).json(response);
+    }
+    const response = formatRes(
+      meta('Packet details', 200, 'success'),
+      formatPacket(packet),
+    );
+    return res.status(200).json(response);
+  } catch (error) {
+    const response = formatRes(
+      meta('Service unavailable', 503, 'error'),
+      error,
+    );
+    return res.status(503).json(response);
+  }
+};
+
+const updatePacket = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const {title, subtitle, description, category_id} = req.body;
+    const packet = await Packet.findByPk(id);
+    if (packet === null) {
+      const response = formatRes(meta('Page not found', 404, 'success'));
+      return res.status(404).json(response);
+    }
+
+    const categoryExists = await Category.findByPk(category_id);
+    if (categoryExists === null) {
+      const response = formatRes(meta(`Category did'nt exists`, 422, 'error'));
+      return res.status(422).json(response);
+    }
+
+    let slug = await slugify(title, {
+      replacement: '-',
+      lower: true,
+      strict: true,
+    });
+    if (slug === '') {
+      const response = formatRes(
+        meta('Please input alphabet and number character only', 422, 'error'),
+      );
+      return res.status(422).json(response);
+    }
+
+    const slugExists = await Packet.findOne({where: {slug}});
+    if (slugExists) {
+      slug = `${slug}-${Math.floor(Math.random() * 1453 + 1)}`;
+    }
+
+    let newPacket = {
+      image: packet.image,
+      title,
+      subtitle,
+      slug,
+      description,
+      category_id,
+    };
+    if (req.file) {
+      const pathFile = path.join(__dirname, `../public/${packet.image}`);
+      const exists = await fs.pathExists(pathFile);
+      if (exists) {
+        await fs.unlink(pathFile);
+      }
+      newPacket = {
+        image: `images/packets/${req.file.filename}`,
+        title,
+        subtitle,
+        slug,
+        description,
+        category_id,
+      };
+    }
+
+    let updatedData = await packet.update(newPacket);
+    updatedData = await Packet.findByPk(updatedData.id, {include: 'category'});
+    const response = formatRes(
+      meta('Packet updated', 200, 'success'),
+      formatPacket(updatedData),
+    );
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    const response = formatRes(
+      meta('Service unavailable', 503, 'error'),
+      error,
+    );
+    return res.status(503).json(response);
+  }
+};
+
+const deletePacket = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const packet = await Packet.findByPk(id);
+    if (packet === null) {
+      const response = formatRes(meta('Page not found', 404, 'success'));
+      return res.status(404).json(response);
+    }
+
+    const pathFile = path.join(__dirname, `../public/${packet.image}`);
+    const exists = await fs.pathExists(pathFile);
+    if (exists) {
+      await fs.unlink(pathFile);
+    }
+    await packet.destroy();
+    const response = formatRes(meta('Packet deleted', 200, 'success'));
+    return res.status(204).json(response);
+  } catch (error) {
+    const response = formatRes(
+      meta('Service unavailable', 503, 'error'),
+      error,
+    );
+    return res.status(503).json(response);
+  }
+};
+
+module.exports = {
+  createPacket,
+  getPackets,
+  getPacket,
+  updatePacket,
+  deletePacket,
+};
