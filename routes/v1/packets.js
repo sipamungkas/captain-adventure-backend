@@ -17,5 +17,6 @@ router.post(
 );
 
 router.get('/', authenticateToken, packetsController.getPackets);
+router.get('/:id', authenticateToken, packetsController.getPacket);
 
 module.exports = router;

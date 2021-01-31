@@ -1,7 +1,10 @@
 const slugify = require('slugify');
 const {Category, Packet} = require('../models');
 const {meta, formatRes} = require('../helper/formatter/responseFormatter');
-const {formatPackets} = require('../helper/formatter/packetFormatter');
+const {
+  formatPackets,
+  formatPacket,
+} = require('../helper/formatter/packetFormatter');
 
 const createPacket = async (req, res) => {
   try {
@@ -76,7 +79,7 @@ const getPackets = async (req, res) => {
       offset: (page - 1) * perPage,
       limit: perPage,
       order: orderParameter,
-      include: 'Category',
+      include: 'category',
     });
     if (packets === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
@@ -97,4 +100,25 @@ const getPackets = async (req, res) => {
   }
 };
 
-module.exports = {createPacket, getPackets};
+const getPacket = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const packet = await Packet.findByPk(id, {include: 'category'});
+    if (packet === null) {
+      const response = formatRes(meta('Page not found', 404, 'success'));
+      return res.status(404).json(response);
+    }
+    const response = formatRes(
+      meta('Packet details', 200, 'success'),
+      formatPacket(packet),
+    );
+    return res.status(200).json(response);
+  } catch (error) {
+    const response = formatRes(
+      meta('Service unavailable', 503, 'error'),
+      error,
+    );
+    return res.status(503).json(response);
+  }
+};
+module.exports = {createPacket, getPackets, getPacket};

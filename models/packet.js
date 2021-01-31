@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Packet.belongsTo(models.Category);
+      Packet.belongsTo(models.Category, {as: 'category'});
     }
   }
   Packet.init(

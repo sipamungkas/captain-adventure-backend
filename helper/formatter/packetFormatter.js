@@ -8,9 +8,9 @@ const formatPacket = (packet) => {
     description: packet.description,
     is_active: packet.is_active,
     category: {
-      id: packet.Category.id,
-      name: packet.Category.name,
-      slug: packet.Category.slug,
+      id: packet.category.id,
+      name: packet.category.name,
+      slug: packet.category.slug,
     },
   };
   return formatter;
