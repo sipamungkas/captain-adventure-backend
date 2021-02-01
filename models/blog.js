@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       perks: DataTypes.STRING,
       short_description: DataTypes.STRING,
       body: DataTypes.TEXT,
+      is_active: DataTypes.BOOLEAN,
     },
     {
       sequelize,
