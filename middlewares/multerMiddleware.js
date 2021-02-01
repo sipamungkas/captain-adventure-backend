@@ -30,6 +30,12 @@ const categoryStorage = multer.diskStorage({
     cb(null, `category-${Date.now()}${path.extname(file.originalname)}`);
   },
 });
+const heroStorage = multer.diskStorage({
+  destination: 'public/images/hero',
+  filename: (req, file, cb) => {
+    cb(null, `hero-${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
 
 const uploadAvatar = multer({storage: avatarStorage}).single('image');
 const uploadPacketImage = multer({
@@ -44,5 +50,16 @@ const uploadCategoryImage = multer({
     checkFileType(file, cb);
   },
 }).single('image');
+const uploadHeroImage = multer({
+  storage: heroStorage,
+  fileFilter(req, file, cb) {
+    checkFileType(file, cb);
+  },
+}).single('image');
 
-module.exports = {uploadAvatar, uploadPacketImage, uploadCategoryImage};
+module.exports = {
+  uploadAvatar,
+  uploadPacketImage,
+  uploadCategoryImage,
+  uploadHeroImage,
+};
