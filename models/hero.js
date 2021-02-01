@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       video: DataTypes.STRING,
       title: DataTypes.STRING,
       short_description: DataTypes.STRING,
+      is_active: DataTypes.BOOLEAN,
     },
     {
       sequelize,
