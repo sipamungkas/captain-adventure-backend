@@ -119,7 +119,6 @@ const updateTestimonial = async (req, res) => {
     const {name, testimoni, order} = req.body;
     // console.log(id, name, testimoni, order);
     const orderExists = await Testimonial.findOne({where: {order}});
-    console.log(orderExists);
     if (orderExists && orderExists.id !== parseInt(id, 8)) {
       const response = formatRes(
         meta(`Order number ${order} already exists`, 422, 'error'),

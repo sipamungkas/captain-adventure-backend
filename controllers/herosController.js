@@ -7,9 +7,10 @@ const {formatHero, formatHeros} = require('../helper/formatter/heroFormatter');
 
 const createHero = async (req, res) => {
   try {
-    const {title, short_description, video} = req.body;
+    const {title, short_description, video, order} = req.body;
     let newHero = {
       image: null,
+      order,
       video,
       title,
       short_description,
@@ -17,6 +18,7 @@ const createHero = async (req, res) => {
     if (req.file) {
       newHero = {
         image: `images/hero/${req.file.filename}`,
+        order,
         video,
         title,
         short_description,
@@ -99,7 +101,14 @@ const getHero = async (req, res) => {
 const updateHero = async (req, res) => {
   try {
     const {id} = req.params;
-    const {title, video, short_description} = req.body;
+    const {title, video, short_description, order} = req.body;
+    const orderExists = await Hero.findOne({where: {order}});
+    if (orderExists && orderExists.id !== parseInt(id, 8)) {
+      const response = formatRes(
+        meta(`Order number ${order} already exists`, 422, 'error'),
+      );
+      return res.status(422).json(response);
+    }
     const hero = await Hero.findByPk(id);
     if (hero === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
@@ -108,7 +117,7 @@ const updateHero = async (req, res) => {
 
     let newHero = {
       image: null,
-      video,
+      order,
       title,
       short_description,
     };
@@ -121,6 +130,7 @@ const updateHero = async (req, res) => {
       }
       newHero = {
         image: `images/hero/${req.file.filename}`,
+        order,
         video,
         title,
         short_description,

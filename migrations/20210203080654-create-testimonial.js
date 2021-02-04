@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.TEXT,
       },
       order: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.INTEGER,
       },
       created_at: {

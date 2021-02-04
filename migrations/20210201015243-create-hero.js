@@ -28,6 +28,10 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: true,
       },
+      order: {
+        allowNull: true,
+        type: Sequelize.INTEGER,
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,

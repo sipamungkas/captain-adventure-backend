@@ -6,6 +6,7 @@ const formatHero = (hero) => {
     title: hero.title,
     short_description: hero.short_description,
     is_active: hero.is_active,
+    order: hero.order,
   };
   return formatter;
 };
