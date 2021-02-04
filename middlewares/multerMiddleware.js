@@ -17,6 +17,7 @@ const avatarStorage = multer.diskStorage({
     cb(null, `${req.user.id}-${Date.now()}${path.extname(file.originalname)}`);
   },
 });
+
 const packetStorage = multer.diskStorage({
   destination: 'public/images/packets',
   filename: (req, file, cb) => {
@@ -52,6 +53,13 @@ const programStorage = multer.diskStorage({
   },
 });
 
+const testimonialStorage = multer.diskStorage({
+  destination: 'public/images/testimonials',
+  filename: (req, file, cb) => {
+    cb(null, `testimonials-${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
+
 const uploadAvatar = multer({storage: avatarStorage}).single('image');
 const uploadPacketImage = multer({
   storage: packetStorage,
@@ -59,12 +67,14 @@ const uploadPacketImage = multer({
     checkFileType(file, cb);
   },
 }).single('image');
+
 const uploadCategoryImage = multer({
   storage: categoryStorage,
   fileFilter(req, file, cb) {
     checkFileType(file, cb);
   },
 }).single('image');
+
 const uploadHeroImage = multer({
   storage: heroStorage,
   fileFilter(req, file, cb) {
@@ -86,6 +96,13 @@ const uploadProgramImage = multer({
   },
 }).single('image');
 
+const uploadTestimonialImage = multer({
+  storage: testimonialStorage,
+  fileFilter(req, file, cb) {
+    checkFileType(file, cb);
+  },
+}).single('image');
+
 module.exports = {
   uploadAvatar,
   uploadPacketImage,
@@ -93,4 +110,5 @@ module.exports = {
   uploadHeroImage,
   uploadBlogpostImage,
   uploadProgramImage,
+  uploadTestimonialImage,
 };
