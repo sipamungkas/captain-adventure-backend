@@ -4,15 +4,15 @@ module.exports = {
       'galleries',
       [
         {
-          image: 'images/galleries/johndoe.jpg',
-          alt: 'John Doe',
+          image: 'images/galleries/gallery1.jpg',
+          alt: 'ALT GALLERY 1 UNTUK SEO',
           is_active: true,
           created_at: new Date(),
           updated_at: new Date(),
         },
         {
-          image: 'images/galleries/lanaya.jpg',
-          alt: 'Lanaya',
+          image: 'images/galleries/gallery2.jpg',
+          alt: 'ALT GALERY 2 yaaaaaa',
           is_active: true,
           created_at: new Date(),
           updated_at: new Date(),

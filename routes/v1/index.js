@@ -6,6 +6,7 @@ const herosRouter = require('./heros');
 const blogPostrouter = require('./blogs');
 const programsRouter = require('./programs');
 const testimonialsRouter = require('./testimonials');
+const galleriesRouter = require('./galleries');
 
 const router = express.Router();
 
@@ -23,5 +24,7 @@ router.use('/posts', blogPostrouter);
 router.use('/programs', programsRouter);
 // Testimonials resources
 router.use('/testimonials', testimonialsRouter);
+// Galleries resources
+router.use('/galleries', galleriesRouter);
 
 module.exports = router;
