@@ -3,6 +3,7 @@ const formatBlog = (post) => {
     id: post.id,
     image: post.image,
     title: post.title,
+    slug: post.slug,
     perks: post.perks,
     short_description: post.short_description,
     body: post.body,

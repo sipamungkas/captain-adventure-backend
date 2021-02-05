@@ -154,7 +154,7 @@ const updatePacket = async (req, res) => {
     }
 
     const slugExists = await Packet.findOne({where: {slug}});
-    if (slugExists) {
+    if (slugExists && slugExists.id !== packet.id) {
       slug = `${slug}-${Math.floor(Math.random() * 1453 + 1)}`;
     }
 

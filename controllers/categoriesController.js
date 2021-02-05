@@ -136,7 +136,7 @@ const updateCategory = async (req, res) => {
     }
 
     const slugExists = await Category.findOne({where: {slug}});
-    if (slugExists) {
+    if (slugExists && slugExists.id !== category.id) {
       slug = `${slug}-${Math.floor(Math.random() * 1453 + 1)}`;
     }
 
