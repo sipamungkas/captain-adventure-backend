@@ -1,36 +1,52 @@
-const fs = require('fs-extra');
-const path = require('path');
-const {Gallery} = require('../models');
+const slugify = require('slugify');
+const {Contact} = require('../models');
 const {meta, formatRes} = require('../helper/formatter/responseFormatter');
 
 const {
-  formatGallery,
-  formatGalleries,
-} = require('../helper/formatter/galleryFormatter');
+  formatContact,
+  formatContacts,
+} = require('../helper/formatter/contactFormatter');
 
-const createGallery = async (req, res) => {
+const createContact = async (req, res) => {
   try {
-    if (!req.file) {
-      const response = formatRes(meta('invalid image type', 422, 'error'));
+    const {key, value, link, category} = req.body;
+    const slug = await slugify(key, {
+      replacement: '-',
+      lower: true,
+      strict: true,
+    });
+
+    if (slug === '') {
+      const response = formatRes(
+        meta('Please input alphabet and number character only', 422, 'error'),
+      );
       return res.status(422).json(response);
     }
-    const {alt} = req.body;
-    let newGallery = {
-      image: null,
-      alt,
-    };
-    if (req.file) {
-      newGallery = {
-        image: `images/galleries/${req.file.filename}`,
-        alt,
-      };
+
+    const slugExists = await Contact.findOne({where: {key: slug}});
+    if (slugExists) {
+      const response = formatRes(
+        meta(
+          'Key already exists, please create new contact or edit contact',
+          422,
+          'error',
+        ),
+      );
+      return res.status(422).json(response);
     }
-    const gallery = await Gallery.create(newGallery);
-    if (gallery === null) {
+    const newContact = {
+      key: slug,
+      value,
+      link,
+      category,
+    };
+
+    const contact = await Contact.create(newContact);
+    if (contact === null) {
       const response = formatRes(meta('Service unavailable', 503, 'error'));
       return res.status(503).json(response);
     }
-    const response = formatRes(meta('Gallery created', 201, 'success'));
+    const response = formatRes(meta('Contact created', 201, 'success'));
     return res.status(201).json(response);
   } catch (error) {
     console.log(error);
@@ -42,7 +58,7 @@ const createGallery = async (req, res) => {
   }
 };
 
-const getGalleries = async (req, res) => {
+const getContacts = async (req, res) => {
   try {
     const {orderByDate} = req.query;
     let {perPage, page} = req.query;
@@ -53,18 +69,18 @@ const getGalleries = async (req, res) => {
     if (orderByDate && orderByDate.toLowerCase() === 'desc') {
       orderParameter = [['updated_at', 'DESC']];
     }
-    const galleries = await Gallery.findAll({
+    const contacts = await Contact.findAll({
       offset: (page - 1) * perPage,
       limit: perPage,
       order: orderParameter,
     });
-    if (galleries === null) {
+    if (contacts === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
-    const data = await formatGalleries(galleries);
+    const data = await formatContacts(contacts);
     const response = await formatRes(
-      meta('List of galleries', 200, 'success'),
+      meta('List of contacts', 200, 'success'),
       data,
     );
     return res.status(200).json(response);
@@ -78,17 +94,17 @@ const getGalleries = async (req, res) => {
   }
 };
 
-const getGallery = async (req, res) => {
+const getContact = async (req, res) => {
   try {
     const {id} = req.params;
-    const gallery = await Gallery.findByPk(id);
-    if (gallery === null) {
+    const contact = await Contact.findByPk(id);
+    if (contact === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
     const response = formatRes(
-      meta('Gallery details', 200, 'success'),
-      formatGallery(gallery),
+      meta('Contact details', 200, 'success'),
+      formatContact(contact),
     );
     return res.status(200).json(response);
   } catch (error) {
@@ -100,36 +116,25 @@ const getGallery = async (req, res) => {
   }
 };
 
-const updateGallery = async (req, res) => {
+const updateContact = async (req, res) => {
   try {
     const {id} = req.params;
-    const {alt} = req.body;
-    const gallery = await Gallery.findByPk(id);
-    if (gallery === null) {
+    const {value, link, category} = req.body;
+    const contact = await Contact.findByPk(id);
+    if (contact === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
-
-    let newGallery = {
-      image: null,
-      alt,
+    const newContact = {
+      key: id,
+      value,
+      link,
+      category,
     };
-
-    if (req.file) {
-      const pathFile = path.join(__dirname, `../public/${gallery.image}`);
-      const exists = await fs.pathExists(pathFile);
-      if (exists) {
-        await fs.unlink(pathFile);
-      }
-      newGallery = {
-        image: `images/galleries/${req.file.filename}`,
-        alt,
-      };
-    }
-    const updatedData = await gallery.update(newGallery);
+    const updatedData = await contact.update(newContact);
     const response = formatRes(
-      meta('Gallery updated', 200, 'success'),
-      formatGallery(updatedData),
+      meta('Contact updated', 200, 'success'),
+      formatContact(updatedData),
     );
     return res.status(200).json(response);
   } catch (error) {
@@ -142,22 +147,16 @@ const updateGallery = async (req, res) => {
   }
 };
 
-const deleteGallery = async (req, res) => {
+const deleteContact = async (req, res) => {
   try {
     const {id} = req.params;
-    const gallery = await Gallery.findByPk(id);
-    if (gallery === null) {
+    const contact = await Contact.findByPk(id);
+    if (contact === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
-
-    const pathFile = path.join(__dirname, `../public/${gallery.image}`);
-    const exists = await fs.pathExists(pathFile);
-    if (exists) {
-      await fs.unlink(pathFile);
-    }
-    await gallery.destroy();
-    const response = formatRes(meta('Gallery deleted', 200, 'success'));
+    await contact.destroy();
+    const response = formatRes(meta('Contact deleted', 200, 'success'));
     return res.status(204).json(response);
   } catch (error) {
     console.log(error);
@@ -170,9 +169,9 @@ const deleteGallery = async (req, res) => {
 };
 
 module.exports = {
-  createGallery,
-  getGalleries,
-  getGallery,
-  updateGallery,
-  deleteGallery,
+  createContact,
+  getContacts,
+  getContact,
+  updateContact,
+  deleteContact,
 };

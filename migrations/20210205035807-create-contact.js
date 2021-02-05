@@ -11,9 +11,11 @@ module.exports = {
         type: Sequelize.STRING,
       },
       link: {
+        allowNull: true,
         type: Sequelize.STRING,
       },
       category: {
+        allowNull: true,
         type: Sequelize.STRING,
       },
       created_at: {
