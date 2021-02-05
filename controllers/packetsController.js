@@ -10,7 +10,7 @@ const {
 
 const createPacket = async (req, res) => {
   try {
-    if (!req.file) {
+    if (!req.files) {
       const response = formatRes(meta(`Invalid image type`, 422, 'error'));
       return res.status(422).json(response);
     }
@@ -42,7 +42,8 @@ const createPacket = async (req, res) => {
     }
 
     const packet = await Packet.create({
-      image: `images/packets/${req.file.filename}`,
+      image: `images/packets/${req.files.image[0].filename}`,
+      cover: `images/packets/${req.files.cover[0].filename}`,
       title,
       subtitle,
       slug,
@@ -153,11 +154,12 @@ const updatePacket = async (req, res) => {
     }
 
     const slugExists = await Packet.findOne({where: {slug}});
-    if (slugExists) {
+    if (slugExists && slugExists.id !== packet.id) {
       slug = `${slug}-${Math.floor(Math.random() * 1453 + 1)}`;
     }
 
     let newPacket = {
+      cover: packet.cover,
       image: packet.image,
       title,
       subtitle,
@@ -166,13 +168,19 @@ const updatePacket = async (req, res) => {
       category_id,
     };
     if (req.file) {
-      const pathFile = path.join(__dirname, `../public/${packet.image}`);
-      const exists = await fs.pathExists(pathFile);
-      if (exists) {
-        await fs.unlink(pathFile);
+      const pathFileImage = path.join(__dirname, `../public/${packet.image}`);
+      const imageExists = await fs.pathExists(pathFileImage);
+      const pathFileCover = path.join(__dirname, `../public/${packet.cover}`);
+      const coverExists = await fs.pathExists(pathFileCover);
+      if (imageExists) {
+        await fs.unlink(pathFileImage);
+      }
+      if (coverExists) {
+        await fs.unlink(pathFileCover);
       }
       newPacket = {
-        image: `images/packets/${req.file.filename}`,
+        cover: `images/packets/${req.files.cover[0].filename}`,
+        image: `images/packets/${req.files.image[0].filename}`,
         title,
         subtitle,
         slug,
@@ -207,10 +215,15 @@ const deletePacket = async (req, res) => {
       return res.status(404).json(response);
     }
 
-    const pathFile = path.join(__dirname, `../public/${packet.image}`);
-    const exists = await fs.pathExists(pathFile);
-    if (exists) {
-      await fs.unlink(pathFile);
+    const pathFileImage = path.join(__dirname, `../public/${packet.image}`);
+    const imageExists = await fs.pathExists(pathFileImage);
+    const pathFileCover = path.join(__dirname, `../public/${packet.cover}`);
+    const coverExists = await fs.pathExists(pathFileCover);
+    if (imageExists) {
+      await fs.unlink(pathFileImage);
+    }
+    if (coverExists) {
+      await fs.unlink(pathFileCover);
     }
     await packet.destroy();
     const response = formatRes(meta('Packet deleted', 200, 'success'));

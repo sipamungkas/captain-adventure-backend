@@ -1,4 +1,5 @@
 const fs = require('fs-extra');
+const slugify = require('slugify');
 const path = require('path');
 const {Blog} = require('../models');
 const {meta, formatRes} = require('../helper/formatter/responseFormatter');
@@ -8,8 +9,25 @@ const {formatBlog, formatBlogs} = require('../helper/formatter/blogFormatter');
 const createBlogPost = async (req, res) => {
   try {
     const {title, perks, short_description, body} = req.body;
+    let slug = await slugify(title, {
+      replacement: '-',
+      lower: true,
+      strict: true,
+    });
+    if (slug === '') {
+      const response = formatRes(
+        meta('Please input alphabet and number character only', 422, 'error'),
+      );
+      return res.status(422).json(response);
+    }
+
+    const slugExists = await Blog.findOne({where: {slug}});
+    if (slugExists) {
+      slug = `${slug}-${Math.floor(Math.random() * 1453 + 1)}`;
+    }
     let newPost = {
       image: null,
+      slug,
       title,
       perks,
       short_description,
@@ -18,6 +36,7 @@ const createBlogPost = async (req, res) => {
     if (req.file) {
       newPost = {
         image: `images/blogs/${req.file.filename}`,
+        slug,
         title,
         perks,
         short_description,
@@ -107,10 +126,26 @@ const updateBlogPost = async (req, res) => {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
+    let slug = await slugify(title, {
+      replacement: '-',
+      lower: true,
+      strict: true,
+    });
+    if (slug === '') {
+      const response = formatRes(
+        meta('Please input alphabet and number character only', 422, 'error'),
+      );
+      return res.status(422).json(response);
+    }
 
+    const slugExists = await Blog.findOne({where: {slug}});
+    if (slugExists && slugExists.id !== post.id) {
+      slug = `${slug}-${Math.floor(Math.random() * 1453 + 1)}`;
+    }
     let newPost = {
       image: null,
       title,
+      slug,
       perks,
       short_description,
       body,
@@ -125,6 +160,7 @@ const updateBlogPost = async (req, res) => {
       newPost = {
         image: `images/blogs/${req.file.filename}`,
         title,
+        slug,
         perks,
         short_description,
         body,

@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Packet.init(
     {
+      cover: DataTypes.STRING,
       image: DataTypes.STRING,
       title: DataTypes.STRING,
       subtitle: DataTypes.STRING,

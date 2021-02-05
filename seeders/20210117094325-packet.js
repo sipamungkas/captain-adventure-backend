@@ -4,6 +4,7 @@ module.exports = {
       'packets',
       [
         {
+          cover: 'packets/cover.png',
           image: 'packets/image.png',
           title: 'packet adventure',
           subtitle: 'packet adventure',
@@ -15,6 +16,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
+          cover: 'packets/cover.png',
           image: 'packets/image.png',
           title: 'packet rafting',
           subtitle: 'packet rafting',
