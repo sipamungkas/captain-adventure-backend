@@ -60,6 +60,13 @@ const testimonialStorage = multer.diskStorage({
   },
 });
 
+const galleryStorage = multer.diskStorage({
+  destination: 'public/images/galleries',
+  filename: (req, file, cb) => {
+    cb(null, `gallery-${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
+
 const uploadAvatar = multer({storage: avatarStorage}).single('image');
 const uploadPacketImage = multer({
   storage: packetStorage,
@@ -103,6 +110,13 @@ const uploadTestimonialImage = multer({
   },
 }).single('image');
 
+const uploadGalleryImage = multer({
+  storage: galleryStorage,
+  fileFilter(req, file, cb) {
+    checkFileType(file, cb);
+  },
+}).single('image');
+
 module.exports = {
   uploadAvatar,
   uploadPacketImage,
@@ -111,4 +125,5 @@ module.exports = {
   uploadBlogpostImage,
   uploadProgramImage,
   uploadTestimonialImage,
+  uploadGalleryImage,
 };
