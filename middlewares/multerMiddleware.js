@@ -68,12 +68,22 @@ const galleryStorage = multer.diskStorage({
 });
 
 const uploadAvatar = multer({storage: avatarStorage}).single('image');
+// const uploadPacketImage = multer({
+//   storage: packetStorage,
+//   fileFilter(req, file, cb) {
+//     checkFileType(file, cb);
+//   },
+// }).single('image');
+
 const uploadPacketImage = multer({
   storage: packetStorage,
   fileFilter(req, file, cb) {
     checkFileType(file, cb);
   },
-}).single('image');
+}).fields([
+  {name: 'image', maxCount: 1},
+  {name: 'cover', maxCount: 1},
+]);
 
 const uploadCategoryImage = multer({
   storage: categoryStorage,
