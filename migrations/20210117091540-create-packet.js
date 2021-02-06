@@ -19,6 +19,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
+      start_at: {
+        allowNull: true,
+        type: Sequelize.STRING(50),
+      },
       subtitle: {
         allowNull: true,
         type: Sequelize.STRING(100),

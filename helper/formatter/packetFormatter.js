@@ -4,6 +4,7 @@ const formatPacket = (packet) => {
     cover: packet.cover,
     image: packet.image,
     title: packet.title,
+    start_at: packet.start_at,
     subtitle: packet.subtitle,
     slug: packet.slug,
     description: packet.description,

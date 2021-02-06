@@ -15,7 +15,7 @@ const createPacket = async (req, res) => {
       return res.status(422).json(response);
     }
 
-    const {title, subtitle, description, category_id} = req.body;
+    const {title, start_at, subtitle, description, category_id} = req.body;
 
     const categoryExists = await Category.findByPk(category_id);
     if (categoryExists === null) {
@@ -45,6 +45,7 @@ const createPacket = async (req, res) => {
       image: `images/packets/${req.files.image[0].filename}`,
       cover: `images/packets/${req.files.cover[0].filename}`,
       title,
+      start_at,
       subtitle,
       slug,
       description,
@@ -128,7 +129,7 @@ const getPacket = async (req, res) => {
 const updatePacket = async (req, res) => {
   try {
     const {id} = req.params;
-    const {title, subtitle, description, category_id} = req.body;
+    const {title, start_at, subtitle, description, category_id} = req.body;
     const packet = await Packet.findByPk(id);
     if (packet === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
@@ -162,6 +163,7 @@ const updatePacket = async (req, res) => {
       cover: packet.cover,
       image: packet.image,
       title,
+      start_at,
       subtitle,
       slug,
       description,
