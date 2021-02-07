@@ -12,56 +12,56 @@ const checkFileType = (file, cb) => {
 };
 
 const avatarStorage = multer.diskStorage({
-  destination: 'public/images/avatars',
+  destination: `${__dirname}/../public/images/avatars`,
   filename: (req, file, cb) => {
     cb(null, `${req.user.id}-${Date.now()}${path.extname(file.originalname)}`);
   },
 });
 
 const packetStorage = multer.diskStorage({
-  destination: 'public/images/packets',
+  destination: `${__dirname}/../public/images/packets`,
   filename: (req, file, cb) => {
     cb(null, `packet-${Date.now()}${path.extname(file.originalname)}`);
   },
 });
 
 const categoryStorage = multer.diskStorage({
-  destination: 'public/images/categories',
+  destination: `${__dirname}/../public/images/categories`,
   filename: (req, file, cb) => {
     cb(null, `category-${Date.now()}${path.extname(file.originalname)}`);
   },
 });
 
 const heroStorage = multer.diskStorage({
-  destination: 'public/images/hero',
+  destination: `${__dirname}/../public/images/hero`,
   filename: (req, file, cb) => {
     cb(null, `hero-${Date.now()}${path.extname(file.originalname)}`);
   },
 });
 
 const blogPostStorage = multer.diskStorage({
-  destination: 'public/images/blogs',
+  destination: `${__dirname}/../public/images/blogs`,
   filename: (req, file, cb) => {
     cb(null, `blog-post-${Date.now()}${path.extname(file.originalname)}`);
   },
 });
 
 const programStorage = multer.diskStorage({
-  destination: 'public/images/programs',
+  destination: `${__dirname}/../public/images/programs`,
   filename: (req, file, cb) => {
     cb(null, `programs-${Date.now()}${path.extname(file.originalname)}`);
   },
 });
 
 const testimonialStorage = multer.diskStorage({
-  destination: 'public/images/testimonials',
+  destination: `${__dirname}/../public/images/testimonials`,
   filename: (req, file, cb) => {
     cb(null, `testimonials-${Date.now()}${path.extname(file.originalname)}`);
   },
 });
 
 const galleryStorage = multer.diskStorage({
-  destination: 'public/images/galleries',
+  destination: `${__dirname}/../public/images/galleries`,
   filename: (req, file, cb) => {
     cb(null, `gallery-${Date.now()}${path.extname(file.originalname)}`);
   },
