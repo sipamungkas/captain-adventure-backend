@@ -8,6 +8,7 @@ const programsRouter = require('./programs');
 const testimonialsRouter = require('./testimonials');
 const galleriesRouter = require('./galleries');
 const contactsRouter = require('./contacts');
+const landingPageRouter = require('./landingPages');
 
 const router = express.Router();
 
@@ -20,5 +21,6 @@ router.use('/programs', programsRouter);
 router.use('/testimonials', testimonialsRouter);
 router.use('/galleries', galleriesRouter);
 router.use('/contacts', contactsRouter);
+router.use('/landing-page', landingPageRouter);
 
 module.exports = router;
