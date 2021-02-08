@@ -80,10 +80,7 @@ const uploadPacketImage = multer({
   fileFilter(req, file, cb) {
     checkFileType(file, cb);
   },
-}).fields([
-  {name: 'image', maxCount: 1},
-  {name: 'cover', maxCount: 1},
-]);
+}).single('image');
 
 const uploadCategoryImage = multer({
   storage: categoryStorage,
