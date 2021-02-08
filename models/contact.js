@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   Contact.init(
     {
       key: {type: DataTypes.STRING, primaryKey: true},
-      value: {type: DataTypes.STRING},
+      value: {type: DataTypes.TEXT},
       link: {type: DataTypes.STRING},
       category: {type: DataTypes.STRING},
     },

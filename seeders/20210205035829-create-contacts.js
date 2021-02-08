@@ -11,7 +11,7 @@ module.exports = {
           updated_at: new Date(),
         },
         {
-          key: 'wa1',
+          key: 'wa2',
           value: '6281227812003',
           category: 'social media',
           created_at: new Date(),
@@ -27,13 +27,6 @@ module.exports = {
         {
           key: 'email1',
           value: 'captainadventur@gmail.com',
-          category: 'social media',
-          created_at: new Date(),
-          updated_at: new Date(),
-        },
-        {
-          key: 'ig1',
-          value: 'CaptAdventurer',
           category: 'social media',
           created_at: new Date(),
           updated_at: new Date(),
