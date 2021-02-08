@@ -2,13 +2,13 @@ const {Op} = require('sequelize');
 
 const {Hero, Program, Testimonial, Contact} = require('../models');
 const {formatRes, meta} = require('../helper/formatter/responseFormatter');
-const {formatHeros} = require('../helper/formatter/heroFormatter');
-const {formatPrograms} = require('../helper/formatter/programFormatter');
 const {
   formatTestimonials,
 } = require('../helper/formatter/testimonialFormatter');
-const {formatFooter} = require('../helper/formatter/footerFormatter');
+const {formatFooter} = require('../helper/formatter/landingPageFormatter');
 const {formatContacts} = require('../helper/formatter/contactFormatter');
+const {formatHeros} = require('../helper/formatter/heroFormatter');
+const {formatPrograms} = require('../helper/formatter/programFormatter');
 
 const home = async (req, res) => {
   try {
@@ -27,9 +27,11 @@ const home = async (req, res) => {
 
     const contacts = await Contact.findAll();
     const data = {
-      heros: formatHeros(heros),
-      programs: formatPrograms(programs),
-      testimonials: formatTestimonials(testimonials),
+      heros: formatHeros(heros).map(({id, ...hero}) => hero),
+      programs: formatPrograms(programs).map(({id, ...program}) => program),
+      testimonials: formatTestimonials(testimonials).map(
+        ({id, ...testimonial}) => testimonial,
+      ),
       contacts: formatContacts(contacts),
       footer: formatFooter(formatContacts(contacts), programs),
     };

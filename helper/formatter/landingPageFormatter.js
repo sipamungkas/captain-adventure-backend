@@ -13,7 +13,6 @@ const groupBy = (list, keyGetter) => {
 };
 
 const formatFooter = (contacts, programs) => {
-  console.log(contacts);
   const formattedContacts = groupBy(contacts, (contact) => contact.category);
   const formatter = {
     social_media: formattedContacts.get('social media'),
@@ -23,4 +22,6 @@ const formatFooter = (contacts, programs) => {
   return formatter;
 };
 
-module.exports = {formatFooter};
+module.exports = {
+  formatFooter,
+};
