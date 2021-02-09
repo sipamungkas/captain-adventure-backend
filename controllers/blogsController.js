@@ -4,6 +4,7 @@ const path = require('path');
 const {Blog} = require('../models');
 const {meta, formatRes} = require('../helper/formatter/responseFormatter');
 
+const base_url = process.env.BASEURL;
 const {formatBlog, formatBlogs} = require('../helper/formatter/blogFormatter');
 
 const createBlogPost = async (req, res) => {
@@ -70,7 +71,7 @@ const getBlogsPost = async (req, res) => {
     if (orderByDate && orderByDate.toLowerCase() === 'desc') {
       orderParameter = [['updated_at', 'DESC']];
     }
-    const posts = await Blog.findAll({
+    const posts = await Blog.findAndCountAll({
       offset: (page - 1) * perPage,
       limit: perPage,
       order: orderParameter,
@@ -80,9 +81,31 @@ const getBlogsPost = async (req, res) => {
       return res.status(404).json(response);
     }
     const data = await formatBlogs(posts);
+    const _links = {
+      self: {
+        href: `${base_url}v1/posts?page=${page}&perPage=${perPage}`,
+      },
+      first: {
+        href: `${base_url}v1/posts?page=${page}`,
+      },
+      prev: {
+        href: `${base_url}v1/posts?page=${page - 1}&perPage=${perPage}`,
+      },
+      next: {
+        href: `${base_url}v1/posts?page=${page + 1}&perPage=${perPage}`,
+      },
+      last: {
+        href: `${base_url}v1/posts?page=${Math.ceil(
+          parseInt(posts.count, 8) / perPage,
+        )}&perPage=${perPage}`,
+      },
+    };
+    const total = posts.count;
     const response = await formatRes(
       meta('List of Blog Posts', 200, 'success'),
       data,
+      total,
+      _links,
     );
     return res.status(200).json(response);
   } catch (error) {
