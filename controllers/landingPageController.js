@@ -8,6 +8,7 @@ const {
   Category,
   Packet,
   Blog,
+  Gallery,
 } = require('../models');
 const {formatRes, meta} = require('../helper/formatter/responseFormatter');
 const {
@@ -22,6 +23,10 @@ const {
   formatPackets,
   formatPacket,
 } = require('../helper/formatter/packetFormatter');
+const {
+  formatGalleries,
+  formatGallery,
+} = require('../helper/formatter/galleryFormatter');
 const {formatBlogs, formatBlog} = require('../helper/formatter/blogFormatter');
 
 const base_url = process.env.BASEURL;
@@ -208,8 +213,6 @@ const getBlogs = async (req, res) => {
       },
       total: blogs.count,
       posts: formatBlogs(blogs.rows).map(({id, ...blog}) => blog),
-
-      // posts: formatBlogs(blogs).map(({id, ...blog}) => blog),
       contacts: formatContacts(contacts),
       footer: formatFooter(formatContacts(contacts), programs),
     };
@@ -261,6 +264,95 @@ const getBlogBySlug = async (req, res) => {
   }
 };
 
+const getGalleries = async (req, res) => {
+  try {
+    let {perPage, page} = req.query;
+    perPage = perPage !== undefined ? parseInt(perPage, 10) : 5;
+    page = page !== undefined ? parseInt(page, 10) : 1;
+    const galleries = await Gallery.findAndCountAll({
+      offset: (page - 1) * perPage,
+      limit: perPage,
+      where: {is_active: true},
+    });
+    const contacts = await Contact.findAll();
+    const programs = await Program.findAll({
+      where: {is_active: true},
+      order: [['updated_at', 'desc']],
+    });
+
+    const data = {
+      _links: {
+        self: {
+          href: `${base_url}v1/landing-page/galleries?page=${page}&perPage=${perPage}`,
+        },
+        first: {
+          href: `${base_url}v1/landing-page/galleries?page=${page}`,
+        },
+        prev: {
+          href: `${base_url}v1/landing-page/galleries?page=${
+            page - 1
+          }&perPage=${perPage}`,
+        },
+        next: {
+          href: `${base_url}v1/landing-page/galleries?page=${
+            page + 1
+          }&perPage=${perPage}`,
+        },
+        last: {
+          href: `${base_url}v1/landing-page/galleries?page=${Math.ceil(
+            parseInt(galleries.count, 8) / perPage,
+          )}&perPage=${perPage}`,
+        },
+      },
+      total: galleries.count,
+      galleries: formatGalleries(galleries.rows),
+      contacts: formatContacts(contacts),
+      footer: formatFooter(formatContacts(contacts), programs),
+    };
+    const response = await formatRes(
+      meta('List of Galleries', 200, 'success'),
+      data,
+    );
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    const response = formatRes(meta('Service unavailable', 503, 'error'));
+    return res.status(503).json(response);
+  }
+};
+
+const getGalleryById = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const gallery = await Gallery.findByPk(id);
+    if (gallery === null) {
+      const response = formatRes(meta('Page not found', 404, 'success'));
+      return res.status(404).json(response);
+    }
+    const contacts = await Contact.findAll();
+    const programs = await Program.findAll({
+      where: {is_active: true},
+      order: [['updated_at', 'desc']],
+    });
+    const data = {
+      packet: formatGallery(gallery),
+      contacts: formatContacts(contacts),
+      footer: formatFooter(formatContacts(contacts), programs),
+    };
+    const response = await formatRes(
+      meta('Gallery details', 200, 'success'),
+      data,
+    );
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    const response = formatRes(meta('Service unavailable', 503, 'error'));
+    return res.status(503).json(response);
+  }
+};
+
 module.exports = {
   home,
   getCategories,
@@ -268,4 +360,6 @@ module.exports = {
   getPacketBySlug,
   getBlogs,
   getBlogBySlug,
+  getGalleries,
+  getGalleryById,
 };
