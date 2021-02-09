@@ -170,8 +170,8 @@ const getPacketBySlug = async (req, res) => {
 const getBlogs = async (req, res) => {
   try {
     let {perPage, page} = req.query;
-    perPage = perPage !== undefined ? parseInt(perPage, 8) : 5;
-    page = page !== undefined ? parseInt(page, 8) : 1;
+    perPage = perPage !== undefined ? parseInt(perPage, 10) : 5;
+    page = page !== undefined ? parseInt(page, 10) : 1;
     const blogs = await Blog.findAndCountAll({
       offset: (page - 1) * perPage,
       limit: perPage,
