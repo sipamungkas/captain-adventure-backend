@@ -188,37 +188,39 @@ const getBlogs = async (req, res) => {
       order: [['updated_at', 'desc']],
     });
     const data = {
-      _links: {
-        self: {
-          href: `${base_url}v1/landing-page/blogs?page=${page}&perPage=${perPage}`,
-        },
-        first: {
-          href: `${base_url}v1/landing-page/blogs?page=${page}`,
-        },
-        prev: {
-          href: `${base_url}v1/landing-page/blogs?page=${
-            page - 1
-          }&perPage=${perPage}`,
-        },
-        next: {
-          href: `${base_url}v1/landing-page/blogs?page=${
-            page + 1
-          }&perPage=${perPage}`,
-        },
-        last: {
-          href: `${base_url}v1/landing-page/blogs?page=${Math.ceil(
-            parseInt(blogs.count, 8) / perPage,
-          )}&perPage=${perPage}`,
-        },
-      },
-      total: blogs.count,
       posts: formatBlogs(blogs.rows).map(({id, ...blog}) => blog),
       contacts: formatContacts(contacts),
       footer: formatFooter(formatContacts(contacts), programs),
     };
+    const _links = {
+      self: {
+        href: `${base_url}v1/landing-page/blogs?page=${page}&perPage=${perPage}`,
+      },
+      first: {
+        href: `${base_url}v1/landing-page/blogs?page=${page}`,
+      },
+      prev: {
+        href: `${base_url}v1/landing-page/blogs?page=${
+          page - 1
+        }&perPage=${perPage}`,
+      },
+      next: {
+        href: `${base_url}v1/landing-page/blogs?page=${
+          page + 1
+        }&perPage=${perPage}`,
+      },
+      last: {
+        href: `${base_url}v1/landing-page/blogs?page=${Math.ceil(
+          parseInt(blogs.count, 8) / perPage,
+        )}&perPage=${perPage}`,
+      },
+    };
+    const total = blogs.count;
     const response = await formatRes(
       meta('List of blogs post', 200, 'success'),
       data,
+      total,
+      _links,
     );
 
     return res.status(200).json(response);
@@ -281,37 +283,39 @@ const getGalleries = async (req, res) => {
     });
 
     const data = {
-      _links: {
-        self: {
-          href: `${base_url}v1/landing-page/galleries?page=${page}&perPage=${perPage}`,
-        },
-        first: {
-          href: `${base_url}v1/landing-page/galleries?page=${page}`,
-        },
-        prev: {
-          href: `${base_url}v1/landing-page/galleries?page=${
-            page - 1
-          }&perPage=${perPage}`,
-        },
-        next: {
-          href: `${base_url}v1/landing-page/galleries?page=${
-            page + 1
-          }&perPage=${perPage}`,
-        },
-        last: {
-          href: `${base_url}v1/landing-page/galleries?page=${Math.ceil(
-            parseInt(galleries.count, 8) / perPage,
-          )}&perPage=${perPage}`,
-        },
-      },
-      total: galleries.count,
       galleries: formatGalleries(galleries.rows),
       contacts: formatContacts(contacts),
       footer: formatFooter(formatContacts(contacts), programs),
     };
+    const _links = {
+      self: {
+        href: `${base_url}v1/landing-page/galleries?page=${page}&perPage=${perPage}`,
+      },
+      first: {
+        href: `${base_url}v1/landing-page/galleries?page=${page}`,
+      },
+      prev: {
+        href: `${base_url}v1/landing-page/galleries?page=${
+          page - 1
+        }&perPage=${perPage}`,
+      },
+      next: {
+        href: `${base_url}v1/landing-page/galleries?page=${
+          page + 1
+        }&perPage=${perPage}`,
+      },
+      last: {
+        href: `${base_url}v1/landing-page/galleries?page=${Math.ceil(
+          parseInt(galleries.count, 8) / perPage,
+        )}&perPage=${perPage}`,
+      },
+    };
+    const total = galleries.count;
     const response = await formatRes(
       meta('List of Galleries', 200, 'success'),
       data,
+      total,
+      _links,
     );
 
     return res.status(200).json(response);
@@ -353,6 +357,31 @@ const getGalleryById = async (req, res) => {
   }
 };
 
+const getContacts = async (req, res) => {
+  try {
+    const contacts = await Contact.findAll();
+    const programs = await Program.findAll({
+      where: {is_active: true},
+      order: [['updated_at', 'desc']],
+    });
+
+    const data = {
+      contacts: formatContacts(contacts),
+      footer: formatFooter(formatContacts(contacts), programs),
+    };
+    const response = await formatRes(
+      meta('Contacts Information', 200, 'success'),
+      data,
+    );
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    const response = formatRes(meta('Service unavailable', 503, 'error'));
+    return res.status(503).json(response);
+  }
+};
+
 module.exports = {
   home,
   getCategories,
@@ -362,4 +391,5 @@ module.exports = {
   getBlogBySlug,
   getGalleries,
   getGalleryById,
+  getContacts,
 };
