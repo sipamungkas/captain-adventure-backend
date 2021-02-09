@@ -8,6 +8,8 @@ const {
   formatGalleries,
 } = require('../helper/formatter/galleryFormatter');
 
+const base_url = process.env.BASEURL;
+
 const createGallery = async (req, res) => {
   try {
     if (!req.file) {
@@ -53,7 +55,7 @@ const getGalleries = async (req, res) => {
     if (orderByDate && orderByDate.toLowerCase() === 'desc') {
       orderParameter = [['updated_at', 'DESC']];
     }
-    const galleries = await Gallery.findAll({
+    const galleries = await Gallery.findAndCountAll({
       offset: (page - 1) * perPage,
       limit: perPage,
       order: orderParameter,
@@ -62,10 +64,34 @@ const getGalleries = async (req, res) => {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
-    const data = await formatGalleries(galleries);
-    const response = await formatRes(
+
+    const data = formatGalleries(galleries.rows);
+    const _links = {
+      self: {
+        href: `${base_url}v1/galleries?page=${page}&perPage=${perPage}`,
+      },
+      first: {
+        href: `${base_url}v1/galleries?page=${page}`,
+      },
+      prev: {
+        href: `${base_url}v1/galleries?page=${page - 1}&perPage=${perPage}`,
+      },
+      next: {
+        href: `${base_url}v1/galleries?page=${page + 1}&perPage=${perPage}`,
+      },
+      last: {
+        href: `${base_url}v1/galleries?page=${Math.ceil(
+          parseInt(galleries.count, 8) / perPage,
+        )}&perPage=${perPage}`,
+      },
+    };
+    const total = galleries.count;
+
+    const response = formatRes(
       meta('List of galleries', 200, 'success'),
       data,
+      total,
+      _links,
     );
     return res.status(200).json(response);
   } catch (error) {

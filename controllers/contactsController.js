@@ -7,6 +7,8 @@ const {
   formatContacts,
 } = require('../helper/formatter/contactFormatter');
 
+const base_url = process.env.BASEURL;
+
 const createContact = async (req, res) => {
   try {
     const {key, value, link, category} = req.body;
@@ -69,7 +71,7 @@ const getContacts = async (req, res) => {
     if (orderByDate && orderByDate.toLowerCase() === 'desc') {
       orderParameter = [['updated_at', 'DESC']];
     }
-    const contacts = await Contact.findAll({
+    const contacts = await Contact.findAndCountAll({
       offset: (page - 1) * perPage,
       limit: perPage,
       order: orderParameter,
@@ -78,10 +80,32 @@ const getContacts = async (req, res) => {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
-    const data = await formatContacts(contacts);
+    const data = await formatContacts(contacts.rows);
+    const _links = {
+      self: {
+        href: `${base_url}v1/contacts?page=${page}&perPage=${perPage}`,
+      },
+      first: {
+        href: `${base_url}v1/contacts?page=${page}`,
+      },
+      prev: {
+        href: `${base_url}v1/contacts?page=${page - 1}&perPage=${perPage}`,
+      },
+      next: {
+        href: `${base_url}v1/contacts?page=${page + 1}&perPage=${perPage}`,
+      },
+      last: {
+        href: `${base_url}v1/contacts?page=${Math.ceil(
+          parseInt(contacts.count, 8) / perPage,
+        )}&perPage=${perPage}`,
+      },
+    };
+    const total = contacts.count;
     const response = await formatRes(
       meta('List of contacts', 200, 'success'),
       data,
+      total,
+      _links,
     );
     return res.status(200).json(response);
   } catch (error) {
