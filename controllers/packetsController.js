@@ -90,7 +90,7 @@ const getPackets = async (req, res) => {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
-    const data = await formatPackets(packets);
+    const data = await formatPackets(packets.rows);
     const _links = {
       self: {
         href: `${base_url}v1/packets?page=${page}&perPage=${perPage}`,

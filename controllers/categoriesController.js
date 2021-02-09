@@ -77,7 +77,7 @@ const getCategories = async (req, res) => {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
-    const data = await formatCategories(categories);
+    const data = await formatCategories(categories.rows);
 
     const _links = {
       self: {

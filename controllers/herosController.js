@@ -62,7 +62,7 @@ const getHeros = async (req, res) => {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
-    const data = await formatHeros(heros);
+    const data = await formatHeros(heros.rows);
     const _links = {
       self: {
         href: `${base_url}v1/hero?page=${page}&perPage=${perPage}`,

@@ -80,7 +80,7 @@ const getBlogsPost = async (req, res) => {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
-    const data = await formatBlogs(posts);
+    const data = await formatBlogs(posts.rows);
     const _links = {
       self: {
         href: `${base_url}v1/posts?page=${page}&perPage=${perPage}`,

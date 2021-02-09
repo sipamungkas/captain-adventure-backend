@@ -3,6 +3,7 @@ const path = require('path');
 const {Program} = require('../models');
 const {meta, formatRes} = require('../helper/formatter/responseFormatter');
 
+const base_url = process.env.BASEURL;
 const {
   formatProgram,
   formatPrograms,
@@ -54,19 +55,41 @@ const getPrograms = async (req, res) => {
     if (orderByDate && orderByDate.toLowerCase() === 'desc') {
       orderParameter = [['updated_at', 'DESC']];
     }
-    const posts = await Program.findAll({
+    const programs = await Program.findAndCountAll({
       offset: (page - 1) * perPage,
       limit: perPage,
       order: orderParameter,
     });
-    if (posts === null) {
+    if (programs === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
-    const data = await formatPrograms(posts);
+    const data = await formatPrograms(programs.rows);
+    const _links = {
+      self: {
+        href: `${base_url}v1/programs?page=${page}&perPage=${perPage}`,
+      },
+      first: {
+        href: `${base_url}v1/programs?page=${page}`,
+      },
+      prev: {
+        href: `${base_url}v1/programs?page=${page - 1}&perPage=${perPage}`,
+      },
+      next: {
+        href: `${base_url}v1/programs?page=${page + 1}&perPage=${perPage}`,
+      },
+      last: {
+        href: `${base_url}v1/programs?page=${Math.ceil(
+          parseInt(programs.count, 8) / perPage,
+        )}&perPage=${perPage}`,
+      },
+    };
+    const total = programs.count;
     const response = await formatRes(
       meta('List of Programs', 200, 'success'),
       data,
+      total,
+      _links,
     );
     return res.status(200).json(response);
   } catch (error) {
