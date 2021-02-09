@@ -6,7 +6,7 @@ module.exports = {
         {
           image: 'images/blogs/image.png',
           title: 'Captain adventure memberikan diskon 70%',
-          slug: 'Captain-adventure-memberikan-diskon-70%',
+          slug: 'Captain-adventure-memberikan-diskon-70-percent',
           perks: 'benefit 1, benefit 2, benefit, 3',
           short_description: 'deskripsi singkat, kaya rangkuman gitu',
           body: `
