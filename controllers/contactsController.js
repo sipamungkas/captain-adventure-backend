@@ -1,4 +1,3 @@
-const slugify = require('slugify');
 const {Contact} = require('../models');
 const {meta, formatRes} = require('../helper/formatter/responseFormatter');
 
@@ -11,33 +10,8 @@ const base_url = process.env.BASEURL;
 
 const createContact = async (req, res) => {
   try {
-    const {key, value, link, category} = req.body;
-    const slug = await slugify(key, {
-      replacement: '-',
-      lower: true,
-      strict: true,
-    });
-
-    if (slug === '') {
-      const response = formatRes(
-        meta('Please input alphabet and number character only', 422, 'error'),
-      );
-      return res.status(422).json(response);
-    }
-
-    const slugExists = await Contact.findOne({where: {key: slug}});
-    if (slugExists) {
-      const response = formatRes(
-        meta(
-          'Key already exists, please create new contact or edit contact',
-          422,
-          'error',
-        ),
-      );
-      return res.status(422).json(response);
-    }
+    const {value, link, category} = req.body;
     const newContact = {
-      key: slug,
       value,
       link,
       category,
@@ -51,7 +25,6 @@ const createContact = async (req, res) => {
     const response = formatRes(meta('Contact created', 201, 'success'));
     return res.status(201).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
@@ -109,7 +82,6 @@ const getContacts = async (req, res) => {
     );
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
@@ -150,7 +122,6 @@ const updateContact = async (req, res) => {
       return res.status(404).json(response);
     }
     const newContact = {
-      key: id,
       value,
       link,
       category,
@@ -162,7 +133,6 @@ const updateContact = async (req, res) => {
     );
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
@@ -183,7 +153,6 @@ const deleteContact = async (req, res) => {
     const response = formatRes(meta('Contact deleted', 200, 'success'));
     return res.status(204).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,

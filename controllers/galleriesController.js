@@ -16,13 +16,15 @@ const createGallery = async (req, res) => {
       const response = formatRes(meta('invalid image type', 422, 'error'));
       return res.status(422).json(response);
     }
-    const {alt} = req.body;
+    const {title, alt} = req.body;
     let newGallery = {
+      title,
       image: null,
       alt,
     };
     if (req.file) {
       newGallery = {
+        title,
         image: `images/galleries/${req.file.filename}`,
         alt,
       };
@@ -129,7 +131,7 @@ const getGallery = async (req, res) => {
 const updateGallery = async (req, res) => {
   try {
     const {id} = req.params;
-    const {alt} = req.body;
+    const {title, alt} = req.body;
     const gallery = await Gallery.findByPk(id);
     if (gallery === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
@@ -137,6 +139,7 @@ const updateGallery = async (req, res) => {
     }
 
     let newGallery = {
+      title,
       image: null,
       alt,
     };
@@ -148,6 +151,7 @@ const updateGallery = async (req, res) => {
         await fs.unlink(pathFile);
       }
       newGallery = {
+        title,
         image: `images/galleries/${req.file.filename}`,
         alt,
       };
