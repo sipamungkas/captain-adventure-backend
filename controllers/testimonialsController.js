@@ -3,6 +3,8 @@ const path = require('path');
 const {Testimonial} = require('../models');
 const {meta, formatRes} = require('../helper/formatter/responseFormatter');
 
+const base_url = process.env.BASEURL;
+
 const {
   formatTestimonial,
   formatTestimonials,
@@ -14,7 +16,7 @@ const createTestimonial = async (req, res) => {
       const response = formatRes(meta('invalid image type', 422, 'error'));
       return res.status(422).json(response);
     }
-    const {name, testimoni} = req.body;
+    const {name, testimoni, position} = req.body;
     let {order} = req.body;
     const orderExists = await Testimonial.findOne({where: {order}});
     if (orderExists) {
@@ -27,6 +29,7 @@ const createTestimonial = async (req, res) => {
     let newTestimonial = {
       image: null,
       name,
+      position,
       order,
       testimoni,
     };
@@ -34,6 +37,7 @@ const createTestimonial = async (req, res) => {
       newTestimonial = {
         image: `images/testimonials/${req.file.filename}`,
         name,
+        position,
         order,
         testimoni,
       };
@@ -59,14 +63,14 @@ const getTestimonials = async (req, res) => {
   try {
     const {orderByDate} = req.query;
     let {perPage, page} = req.query;
-    perPage = perPage !== undefined ? parseInt(perPage, 8) : 5;
-    page = page !== undefined ? parseInt(page, 8) : 1;
+    perPage = perPage !== undefined ? parseInt(perPage, 10) : 5;
+    page = page !== undefined ? parseInt(page, 10) : 1;
 
     let orderParameter = [['updated_at', 'ASC']];
     if (orderByDate && orderByDate.toLowerCase() === 'desc') {
       orderParameter = [['updated_at', 'DESC']];
     }
-    const testimonials = await Testimonial.findAll({
+    const testimonials = await Testimonial.findAndCountAll({
       offset: (page - 1) * perPage,
       limit: perPage,
       order: orderParameter,
@@ -75,10 +79,32 @@ const getTestimonials = async (req, res) => {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
-    const data = await formatTestimonials(testimonials);
+    const data = await formatTestimonials(testimonials.rows);
+    const _links = {
+      self: {
+        href: `${base_url}v1/testimonials?page=${page}&perPage=${perPage}`,
+      },
+      first: {
+        href: `${base_url}v1/testimonials?page=${page}`,
+      },
+      prev: {
+        href: `${base_url}v1/testimonials?page=${page - 1}&perPage=${perPage}`,
+      },
+      next: {
+        href: `${base_url}v1/testimonials?page=${page + 1}&perPage=${perPage}`,
+      },
+      last: {
+        href: `${base_url}v1/testimonials?page=${Math.ceil(
+          parseInt(testimonials.count, 8) / perPage,
+        )}&perPage=${perPage}`,
+      },
+    };
+    const total = testimonials.count;
     const response = await formatRes(
       meta('List of Testimonials', 200, 'success'),
       data,
+      total,
+      _links,
     );
     return res.status(200).json(response);
   } catch (error) {
@@ -116,10 +142,9 @@ const getTestimonial = async (req, res) => {
 const updateTestimonial = async (req, res) => {
   try {
     const {id} = req.params;
-    const {name, testimoni, order} = req.body;
-    // console.log(id, name, testimoni, order);
+    const {name, testimoni, order, position} = req.body;
     const orderExists = await Testimonial.findOne({where: {order}});
-    if (orderExists && orderExists.id !== parseInt(id, 8)) {
+    if (orderExists && orderExists.id !== parseInt(id, 10)) {
       const response = formatRes(
         meta(`Order number ${order} already exists`, 422, 'error'),
       );
@@ -134,6 +159,7 @@ const updateTestimonial = async (req, res) => {
     let newTestimonial = {
       image: null,
       name,
+      position,
       order,
       testimoni,
     };
@@ -147,6 +173,7 @@ const updateTestimonial = async (req, res) => {
       newTestimonial = {
         image: `images/testimonials/${req.file.filename}`,
         name,
+        position,
         order,
         testimoni,
       };

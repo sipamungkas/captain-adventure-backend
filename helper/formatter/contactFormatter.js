@@ -1,6 +1,5 @@
 const formatContact = (contact) => {
   const formatter = {
-    key: contact.key,
     value: contact.value,
     link: contact.link,
     category: contact.category,

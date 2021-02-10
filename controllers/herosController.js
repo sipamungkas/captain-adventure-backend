@@ -40,18 +40,20 @@ const createHero = async (req, res) => {
   }
 };
 
+const base_url = process.env.BASEURL;
+
 const getHeros = async (req, res) => {
   try {
     const {orderByDate} = req.query;
     let {perPage, page} = req.query;
-    perPage = perPage !== undefined ? parseInt(perPage, 8) : 5;
-    page = page !== undefined ? parseInt(page, 8) : 1;
+    perPage = perPage !== undefined ? parseInt(perPage, 10) : 5;
+    page = page !== undefined ? parseInt(page, 10) : 1;
 
     let orderParameter = [['updated_at', 'ASC']];
     if (orderByDate && orderByDate.toLowerCase() === 'desc') {
       orderParameter = [['updated_at', 'DESC']];
     }
-    const heros = await Hero.findAll({
+    const heros = await Hero.findAndCountAll({
       offset: (page - 1) * perPage,
       limit: perPage,
       order: orderParameter,
@@ -60,10 +62,32 @@ const getHeros = async (req, res) => {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
-    const data = await formatHeros(heros);
+    const data = await formatHeros(heros.rows);
+    const _links = {
+      self: {
+        href: `${base_url}v1/hero?page=${page}&perPage=${perPage}`,
+      },
+      first: {
+        href: `${base_url}v1/hero?page=${page}`,
+      },
+      prev: {
+        href: `${base_url}v1/hero?page=${page - 1}&perPage=${perPage}`,
+      },
+      next: {
+        href: `${base_url}v1/hero?page=${page + 1}&perPage=${perPage}`,
+      },
+      last: {
+        href: `${base_url}v1/hero?page=${Math.ceil(
+          parseInt(heros.count, 8) / perPage,
+        )}&perPage=${perPage}`,
+      },
+    };
+    const total = heros.count;
     const response = await formatRes(
       meta('List of Hero', 200, 'success'),
       data,
+      total,
+      _links,
     );
     return res.status(200).json(response);
   } catch (error) {
@@ -103,7 +127,7 @@ const updateHero = async (req, res) => {
     const {id} = req.params;
     const {title, video, short_description, order} = req.body;
     const orderExists = await Hero.findOne({where: {order}});
-    if (orderExists && orderExists.id !== parseInt(id, 8)) {
+    if (orderExists && orderExists.id !== parseInt(id, 10)) {
       const response = formatRes(
         meta(`Order number ${order} already exists`, 422, 'error'),
       );

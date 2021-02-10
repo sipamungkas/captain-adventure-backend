@@ -1,6 +1,7 @@
 const formatGallery = (gallery) => {
   const formatter = {
     id: gallery.id,
+    title: gallery.title,
     image: gallery.image,
     alt: gallery.alt,
     is_active: gallery.is_active,

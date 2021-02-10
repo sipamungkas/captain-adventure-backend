@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Gallery.init(
     {
+      title: DataTypes.STRING,
       image: DataTypes.STRING,
       alt: DataTypes.STRING,
       is_active: DataTypes.BOOLEAN,

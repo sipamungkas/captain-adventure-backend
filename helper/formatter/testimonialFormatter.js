@@ -3,6 +3,7 @@ const formatTestimonial = (testimonial) => {
     id: testimonial.id,
     image: testimonial.image,
     name: testimonial.name,
+    position: testimonial.position,
     testimoni: testimonial.testimoni,
     order: testimonial.order,
   };

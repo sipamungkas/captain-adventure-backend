@@ -1,5 +1,6 @@
 const formatPacket = (packet) => {
   const formatter = {
+    id: packet.id,
     image: packet.image,
     title: packet.title,
     start_at: packet.start_at,

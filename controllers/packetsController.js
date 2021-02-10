@@ -8,6 +8,8 @@ const {
   formatPacket,
 } = require('../helper/formatter/packetFormatter');
 
+const base_url = process.env.BASEURL;
+
 const createPacket = async (req, res) => {
   try {
     if (!req.file) {
@@ -71,14 +73,14 @@ const getPackets = async (req, res) => {
   try {
     const {orderByDate} = req.query;
     let {perPage, page} = req.query;
-    perPage = perPage !== undefined ? parseInt(perPage, 8) : 5;
-    page = page !== undefined ? parseInt(page, 8) : 1;
+    perPage = perPage !== undefined ? parseInt(perPage, 10) : 5;
+    page = page !== undefined ? parseInt(page, 10) : 1;
 
     let orderParameter = [['updated_at', 'ASC']];
     if (orderByDate && orderByDate.toLowerCase() === 'desc') {
       orderParameter = [['updated_at', 'DESC']];
     }
-    const packets = await Packet.findAll({
+    const packets = await Packet.findAndCountAll({
       offset: (page - 1) * perPage,
       limit: perPage,
       order: orderParameter,
@@ -88,10 +90,32 @@ const getPackets = async (req, res) => {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
-    const data = await formatPackets(packets);
+    const data = await formatPackets(packets.rows);
+    const _links = {
+      self: {
+        href: `${base_url}v1/packets?page=${page}&perPage=${perPage}`,
+      },
+      first: {
+        href: `${base_url}v1/packets?page=${page}`,
+      },
+      prev: {
+        href: `${base_url}v1/packets?page=${page - 1}&perPage=${perPage}`,
+      },
+      next: {
+        href: `${base_url}v1/packets?page=${page + 1}&perPage=${perPage}`,
+      },
+      last: {
+        href: `${base_url}v1/packets?page=${Math.ceil(
+          parseInt(packets.count, 8) / perPage,
+        )}&perPage=${perPage}`,
+      },
+    };
+    const total = packets.count;
     const response = await formatRes(
       meta('List of Packets', 200, 'success'),
       data,
+      total,
+      _links,
     );
     return res.status(200).json(response);
   } catch (error) {
