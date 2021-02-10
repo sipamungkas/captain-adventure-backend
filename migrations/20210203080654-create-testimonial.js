@@ -15,6 +15,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
+      position: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
       testimoni: {
         allowNull: false,
         type: Sequelize.TEXT,

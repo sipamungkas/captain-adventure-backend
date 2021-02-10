@@ -16,6 +16,7 @@ module.exports = {
         {
           image: 'images/testimonials/johndoe.jpg',
           name: 'John Doe',
+          position: 'Ceo of Sibejo Ngoding',
           testimoni:
             'Sebuah testimoni panjang sih gapapa, tapi nanti potong sendiri textnya biar sesuai ya',
           order: 1,
@@ -25,6 +26,7 @@ module.exports = {
         {
           image: 'images/testimonials/lanaya.jpg',
           name: 'Lanaya',
+          position: 'CEO of woman in tech Dota 2',
           testimoni:
             'Sebuah testimoni panjang sih gapapa, tapi nanti potong sendiri textnya biar sesuai ya',
           order: 2,

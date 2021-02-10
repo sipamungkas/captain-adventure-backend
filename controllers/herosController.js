@@ -127,7 +127,7 @@ const updateHero = async (req, res) => {
     const {id} = req.params;
     const {title, video, short_description, order} = req.body;
     const orderExists = await Hero.findOne({where: {order}});
-    if (orderExists && orderExists.id !== parseInt(id, 8)) {
+    if (orderExists && orderExists.id !== parseInt(id, 10)) {
       const response = formatRes(
         meta(`Order number ${order} already exists`, 422, 'error'),
       );
