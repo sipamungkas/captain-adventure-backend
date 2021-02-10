@@ -1,5 +1,6 @@
 const express = require('express');
 const landingPageController = require('../../controllers/landingPageController');
+const {sendQuestionRules} = require('../../validators/questionValidator');
 
 const router = express.Router();
 
@@ -11,5 +12,10 @@ router.get('/blogs', landingPageController.getBlogs);
 router.get('/blogs/:slug', landingPageController.getBlogBySlug);
 router.get('/galleries', landingPageController.getGalleries);
 router.get('/galleries/:id', landingPageController.getGalleryById);
+router.post(
+  '/questions',
+  sendQuestionRules,
+  landingPageController.sendQuestion,
+);
 
 module.exports = router;
