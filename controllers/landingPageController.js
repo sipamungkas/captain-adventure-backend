@@ -1,5 +1,6 @@
 const {Op} = require('sequelize');
 
+const {sendQuestionNotification} = require('../services/mail');
 const {
   Hero,
   Program,
@@ -9,6 +10,7 @@ const {
   Packet,
   Blog,
   Gallery,
+  Question,
 } = require('../models');
 const {formatRes, meta} = require('../helper/formatter/responseFormatter');
 const {
@@ -382,6 +384,23 @@ const getContacts = async (req, res) => {
   }
 };
 
+const sendQuestion = async (req, res) => {
+  try {
+    const {name, email, body} = req.body;
+    const question = await Question.create({name, email, body});
+    if (question === null) {
+      const response = formatRes(meta('Service unavailable', 503, 'error'));
+      return res.status(503).json(response);
+    }
+    await sendQuestionNotification(name, email, body);
+    const response = formatRes(meta('Question has been sent', 201, 'success'));
+    return res.status(201).json(response);
+  } catch (error) {
+    const response = formatRes(meta('Service unavailable', 503, 'error'));
+    return res.status(503).json(response);
+  }
+};
+
 module.exports = {
   home,
   getCategories,
@@ -392,4 +411,5 @@ module.exports = {
   getGalleries,
   getGalleryById,
   getContacts,
+  sendQuestion,
 };
