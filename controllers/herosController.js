@@ -140,7 +140,7 @@ const updateHero = async (req, res) => {
     }
 
     let newHero = {
-      image: null,
+      image: hero.image,
       order,
       title,
       short_description,

@@ -19,7 +19,6 @@ const createTestimonialRules = [
     .bail()
     .isLength({min: 50})
     .withMessage('Testimonial testimoni text length min 50 characters'),
-  body('order').notEmpty().withMessage('Testimonial order can not be empty'),
 ];
 
 module.exports = {createTestimonialRules};

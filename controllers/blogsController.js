@@ -166,7 +166,7 @@ const updateBlogPost = async (req, res) => {
       slug = `${slug}-${Math.floor(Math.random() * 1453 + 1)}`;
     }
     let newPost = {
-      image: null,
+      image: post.image,
       title,
       slug,
       perks,
