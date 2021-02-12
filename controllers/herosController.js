@@ -142,6 +142,7 @@ const updateHero = async (req, res) => {
     let newHero = {
       image: hero.image,
       order,
+      video,
       title,
       short_description,
     };
