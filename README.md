@@ -47,5 +47,11 @@ npx sequelize-cli db:seed:all
 
 ```
 
+One script to run all database migration and seeder
+
+```sh
+npm run db-reset
+```
+
 List of available email service chek this
 [NodeMailer](https://nodemailer.com/smtp/well-known/) documentation
