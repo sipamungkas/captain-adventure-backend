@@ -3,6 +3,8 @@ const formatPacket = (packet) => {
     id: packet.id,
     image: packet.image,
     title: packet.title,
+    perks: packet.perks,
+    short_description: packet.short_description,
     start_at: packet.start_at,
     subtitle: packet.subtitle,
     slug: packet.slug,

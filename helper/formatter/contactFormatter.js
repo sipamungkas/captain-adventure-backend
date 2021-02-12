@@ -1,5 +1,6 @@
 const formatContact = (contact) => {
   const formatter = {
+    id: contact.id,
     value: contact.value,
     link: contact.link,
     category: contact.category,

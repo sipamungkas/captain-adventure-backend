@@ -128,14 +128,14 @@ const updateProgram = async (req, res) => {
   try {
     const {id} = req.params;
     const {title, perks, short_description, body} = req.body;
-    const post = await Program.findByPk(id);
-    if (post === null) {
+    const program = await Program.findByPk(id);
+    if (program === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
 
     let newProgram = {
-      image: null,
+      image: program.image,
       title,
       perks,
       short_description,
@@ -143,7 +143,7 @@ const updateProgram = async (req, res) => {
     };
 
     if (req.file) {
-      const pathFile = path.join(__dirname, `../public/${post.image}`);
+      const pathFile = path.join(__dirname, `../public/${program.image}`);
       const exists = await fs.pathExists(pathFile);
       if (exists) {
         await fs.unlink(pathFile);
@@ -156,7 +156,7 @@ const updateProgram = async (req, res) => {
         body,
       };
     }
-    const updatedData = await post.update(newProgram);
+    const updatedData = await program.update(newProgram);
     const response = formatRes(
       meta('Program updated', 200, 'success'),
       formatProgram(updatedData),

@@ -19,6 +19,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
+      perks: {
+        allowNull: true,
+        type: Sequelize.STRING,
+      },
+      short_description: {
+        allowNull: true,
+        type: Sequelize.STRING,
+      },
       start_at: {
         allowNull: true,
         type: Sequelize.STRING(50),

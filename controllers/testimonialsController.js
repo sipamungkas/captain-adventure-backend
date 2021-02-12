@@ -157,7 +157,7 @@ const updateTestimonial = async (req, res) => {
     }
 
     let newTestimonial = {
-      image: null,
+      image: testimonial.image,
       name,
       position,
       order,

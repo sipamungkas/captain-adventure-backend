@@ -140,7 +140,7 @@ const updateGallery = async (req, res) => {
 
     let newGallery = {
       title,
-      image: null,
+      image: gallery.image,
       alt,
     };
 
