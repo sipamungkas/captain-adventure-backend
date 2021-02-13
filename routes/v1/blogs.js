@@ -21,6 +21,7 @@ router.put(
   '/:id',
   authenticateToken,
   uploadBlogpostImage,
+  createBlogPostRules,
   blogsController.updateBlogPost,
 );
 router.delete('/:id', authenticateToken, blogsController.deleteBlogPost);

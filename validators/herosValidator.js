@@ -12,8 +12,10 @@ const createHeroRules = [
     .notEmpty()
     .withMessage('Hero short description can not be empty')
     .bail()
-    .isLength({min: 3})
-    .withMessage('Hero short description length min 3 characters')
+    .isLength({min: 3, max: 255})
+    .withMessage(
+      'Hero short description min length is 3 characters, max length is 255 characters',
+    )
     .bail(),
 ];
 

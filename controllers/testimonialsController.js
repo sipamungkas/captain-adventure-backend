@@ -18,29 +18,26 @@ const createTestimonial = async (req, res) => {
     }
     const {name, testimoni, position} = req.body;
     let {order} = req.body;
-    const orderExists = await Testimonial.findOne({where: {order}});
-    if (orderExists) {
-      const latestOrderNumber = await Testimonial.findOne({
-        attributes: ['order'],
-        order: [['order', 'desc']],
-      });
-      order = parseInt(latestOrderNumber.order, 8) + 1;
+    order = order === 'null' || !order ? null : order;
+    if (order !== null) {
+      const orderExists = await Testimonial.findOne({where: {order}});
+      if (orderExists) {
+        const response = formatRes(
+          meta(`Order number ${order} already exists`, 422, 'error'),
+        );
+        return res.status(422).json(response);
+      }
     }
-    let newTestimonial = {
+    const newTestimonial = {
       image: null,
       name,
       position,
       order,
       testimoni,
     };
+
     if (req.file) {
-      newTestimonial = {
-        image: `images/testimonials/${req.file.filename}`,
-        name,
-        position,
-        order,
-        testimoni,
-      };
+      newTestimonial.image = `images/testimonials/${req.file.filename}`;
     }
     const testimonial = await Testimonial.create(newTestimonial);
     if (testimonial === null) {
@@ -142,13 +139,17 @@ const getTestimonial = async (req, res) => {
 const updateTestimonial = async (req, res) => {
   try {
     const {id} = req.params;
-    const {name, testimoni, order, position} = req.body;
-    const orderExists = await Testimonial.findOne({where: {order}});
-    if (orderExists && orderExists.id !== parseInt(id, 10)) {
-      const response = formatRes(
-        meta(`Order number ${order} already exists`, 422, 'error'),
-      );
-      return res.status(422).json(response);
+    const {name, testimoni, position} = req.body;
+    let {order} = req.body;
+    order = order === 'null' || !order ? null : order;
+    if (order !== null) {
+      const orderExists = await Testimonial.findOne({where: {order}});
+      if (orderExists && orderExists.id !== parseInt(id, 10)) {
+        const response = formatRes(
+          meta(`Order number ${order} already exists`, 422, 'error'),
+        );
+        return res.status(422).json(response);
+      }
     }
     const testimonial = await Testimonial.findByPk(id);
     if (testimonial === null) {
@@ -156,12 +157,12 @@ const updateTestimonial = async (req, res) => {
       return res.status(404).json(response);
     }
 
-    let newTestimonial = {
+    const newTestimonial = {
       image: testimonial.image,
-      name,
-      position,
-      order,
-      testimoni,
+      name: name || testimonial.name,
+      position: position || testimonial.position,
+      order: order || testimonial.order,
+      testimoni: testimoni || testimonial.testimoni,
     };
 
     if (req.file) {
@@ -170,13 +171,7 @@ const updateTestimonial = async (req, res) => {
       if (exists) {
         await fs.unlink(pathFile);
       }
-      newTestimonial = {
-        image: `images/testimonials/${req.file.filename}`,
-        name,
-        position,
-        order,
-        testimoni,
-      };
+      newTestimonial.image = `images/testimonials/${req.file.filename}`;
     }
     const updatedData = await testimonial.update(newTestimonial);
     const response = formatRes(

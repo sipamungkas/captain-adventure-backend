@@ -5,15 +5,24 @@ const createProgramRules = [
     .notEmpty()
     .withMessage('Program can not be empty')
     .bail()
-    .isLength({min: 3})
-    .withMessage('Program length min 3 characters')
+    .isLength({min: 3, max: 255})
+    .withMessage(
+      'Min title length is 3 characters and max title length is 255 characters',
+    )
     .bail(),
+  body('perks')
+    .isLength({max: 255})
+    .withMessage('Max perks length is 255 characters'),
+  body('short description')
+    .isLength({max: 255})
+    .withMessage('Max short description length is 255 characters'),
   body('body')
     .notEmpty()
-    .withMessage('Program short description can not be empty')
+    .withMessage('Program body can not be empty')
     .bail()
-    .isLength({min: 100})
-    .withMessage('Program short description length min 100 characters')
+    .withMessage(
+      'Min title length is 3 characters and max title length is 255 characters',
+    )
     .bail(),
 ];
 

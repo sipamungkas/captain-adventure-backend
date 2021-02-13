@@ -7,7 +7,10 @@ const {formatHero, formatHeros} = require('../helper/formatter/heroFormatter');
 
 const createHero = async (req, res) => {
   try {
-    const {title, short_description, video, order} = req.body;
+    const {title, short_description, video} = req.body;
+    let {order} = req.body;
+    order = order || null;
+
     let newHero = {
       image: null,
       order,
@@ -125,13 +128,17 @@ const getHero = async (req, res) => {
 const updateHero = async (req, res) => {
   try {
     const {id} = req.params;
-    const {title, video, short_description, order} = req.body;
-    const orderExists = await Hero.findOne({where: {order}});
-    if (orderExists && orderExists.id !== parseInt(id, 10)) {
-      const response = formatRes(
-        meta(`Order number ${order} already exists`, 422, 'error'),
-      );
-      return res.status(422).json(response);
+    const {title, video, short_description} = req.body;
+    let {order} = req.body;
+    order = order === 'null' || !order ? null : order;
+    if (order !== null) {
+      const orderExists = await Hero.findOne({where: {order}});
+      if (orderExists && orderExists.id !== parseInt(id, 10)) {
+        const response = formatRes(
+          meta(`Order number ${order} already exists`, 422, 'error'),
+        );
+        return res.status(422).json(response);
+      }
     }
     const hero = await Hero.findByPk(id);
     if (hero === null) {
@@ -139,12 +146,12 @@ const updateHero = async (req, res) => {
       return res.status(404).json(response);
     }
 
-    let newHero = {
+    const newHero = {
       image: hero.image,
-      order,
-      video,
-      title,
-      short_description,
+      order: order || hero.order,
+      video: video || hero.video,
+      title: title || hero.title,
+      short_description: short_description || hero.short_description,
     };
 
     if (req.file) {
@@ -153,13 +160,7 @@ const updateHero = async (req, res) => {
       if (exists) {
         await fs.unlink(pathFile);
       }
-      newHero = {
-        image: `images/hero/${req.file.filename}`,
-        order,
-        video,
-        title,
-        short_description,
-      };
+      newHero.image = `images/hero/${req.file.filename}`;
     }
     const updatedData = await hero.update(newHero);
     const response = formatRes(

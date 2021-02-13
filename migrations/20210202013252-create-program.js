@@ -16,11 +16,11 @@ module.exports = {
       },
       perks: {
         allowNull: true,
-        type: Sequelize.STRING(50),
+        type: Sequelize.STRING,
       },
       short_description: {
         allowNull: true,
-        type: Sequelize.STRING(50),
+        type: Sequelize.STRING,
       },
       body: {
         allowNull: false,
