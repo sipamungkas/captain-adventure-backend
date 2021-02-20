@@ -11,6 +11,16 @@ const checkFileType = (file, cb) => {
   return cb(null, false);
 };
 
+const checkPdf = (file, cb) => {
+  const fileTypes = /pdf/;
+  const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());
+  const mimeType = fileTypes.test(file.mimetype);
+  if (mimeType && extName) {
+    return cb(null, true);
+  }
+  return cb(null, false);
+};
+
 const avatarStorage = multer.diskStorage({
   destination: `${__dirname}/../public/images/avatars`,
   filename: (req, file, cb) => {
@@ -64,6 +74,13 @@ const galleryStorage = multer.diskStorage({
   destination: `${__dirname}/../public/images/galleries`,
   filename: (req, file, cb) => {
     cb(null, `gallery-${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
+
+const brochureStorage = multer.diskStorage({
+  destination: `${__dirname}/../public/files/brochures`,
+  filename: (req, file, cb) => {
+    cb(null, `brochure.pdf`);
   },
 });
 
@@ -124,6 +141,13 @@ const uploadGalleryImage = multer({
   },
 }).single('image');
 
+const uploadBrochure = multer({
+  storage: brochureStorage,
+  fileFilter(req, file, cb) {
+    checkPdf(file, cb);
+  },
+}).single('file');
+
 module.exports = {
   uploadAvatar,
   uploadPacketImage,
@@ -133,4 +157,5 @@ module.exports = {
   uploadProgramImage,
   uploadTestimonialImage,
   uploadGalleryImage,
+  uploadBrochure,
 };

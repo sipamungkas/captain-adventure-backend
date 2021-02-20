@@ -63,3 +63,4 @@ typings/
 # static file
 public/avatar/
 public/images/
+public/files/

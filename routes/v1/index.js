@@ -10,6 +10,7 @@ const galleriesRouter = require('./galleries');
 const contactsRouter = require('./contacts');
 const questionsRouter = require('./questions');
 const landingPageRouter = require('./landingPages');
+const brochuresRouter = require('./brochures');
 
 const router = express.Router();
 
@@ -24,5 +25,6 @@ router.use('/galleries', galleriesRouter);
 router.use('/contacts', contactsRouter);
 router.use('/questions', questionsRouter);
 router.use('/landing-page', landingPageRouter);
+router.use('/brochures', brochuresRouter);
 
 module.exports = router;
