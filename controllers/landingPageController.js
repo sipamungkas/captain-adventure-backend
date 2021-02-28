@@ -369,7 +369,7 @@ const getContacts = async (req, res) => {
     });
 
     const data = {
-      contacts: formatContacts(contacts),
+      contacts: formatContacts(contacts).map(({id, ...contact}) => contact),
       footer: formatFooter(formatContacts(contacts), programs),
     };
     const response = await formatRes(

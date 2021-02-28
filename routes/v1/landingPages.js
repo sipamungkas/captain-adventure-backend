@@ -12,6 +12,7 @@ router.get('/blogs', landingPageController.getBlogs);
 router.get('/blogs/:slug', landingPageController.getBlogBySlug);
 router.get('/galleries', landingPageController.getGalleries);
 router.get('/galleries/:id', landingPageController.getGalleryById);
+router.get('/contacts', landingPageController.getContacts);
 router.post(
   '/questions',
   sendQuestionRules,
