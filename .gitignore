@@ -64,3 +64,6 @@ typings/
 public/avatar/
 public/images/
 public/files/
+
+# db
+db

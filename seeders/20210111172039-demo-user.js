@@ -12,13 +12,13 @@ module.exports = {
      *   isBetaMember: false
      * }], {});
      */
-    const password = await bcrypt.hash('password', saltRounds);
+    const password = await bcrypt.hash('Password@1902', saltRounds);
     await queryInterface.bulkInsert(
       'users',
       [
         {
-          name: 'Ragil Burhanudin Pamungaks',
-          email: 'om.ragil7@gmail.com',
+          name: 'Admin Captain',
+          email: 'admin@captain-adventure.com',
           password,
           role: 'admin',
           created_at: new Date(),
