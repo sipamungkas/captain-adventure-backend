@@ -36,7 +36,8 @@ const base_url = process.env.BASEURL;
 const home = async (req, res) => {
   try {
     const heros = await Hero.findAll({
-      where: {is_active: true, order: {[Op.not]: null}},
+      // where: {is_active: true, order: {[Op.not]: null}},
+      where: {is_active: true},
       order: [['order', 'asc']],
     });
 
