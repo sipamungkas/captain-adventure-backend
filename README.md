@@ -55,3 +55,31 @@ npm run db-reset
 
 List of available email service chek this
 [NodeMailer](https://nodemailer.com/smtp/well-known/) documentation
+
+## How run captain adventure with docker-compose
+
+```sh
+$ cp env.example .env
+```
+
+setting environment for docker compose
+
+important config (dont change otherwise you change the docker-compose.yml)
+
+```sh
+DB_HOST=mysql
+DB_USERNAME=root
+DB_password=alfatih1453
+```
+
+### Start docker container
+
+```sh
+$ docker-compose up -d
+```
+
+### Stop docker container
+
+```sh
+$ docker-compose down
+```
