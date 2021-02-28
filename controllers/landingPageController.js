@@ -252,7 +252,7 @@ const getBlogBySlug = async (req, res) => {
       order: [['updated_at', 'desc']],
     });
     const data = {
-      packet: formattedBlog,
+      post: formattedBlog,
       contacts: formatContacts(contacts),
       footer: formatFooter(formatContacts(contacts), programs),
     };
