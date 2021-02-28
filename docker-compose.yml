@@ -3,9 +3,7 @@ services:
   captain_api:
     restart: always
     image: node:14.16.0-alpine
-    command:
-      sh -c "NODE_ENV=production npm install --production && npm run db:migrate
-      && npm start"
+    command: sh -c "NODE_ENV=production npm install --production && npm start"
     ports:
       - 3000:3000
     working_dir: /app
