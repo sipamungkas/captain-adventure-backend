@@ -14,16 +14,16 @@ module.exports = {
       [
         {
           image: 'images/categories/image.png',
-          name: 'adventure',
-          slug: 'adventure',
+          name: `adventure_${Math.random() * 10}`,
+          slug: `adventure_${Math.random() * 10}`,
           is_active: true,
           created_at: new Date(),
           updated_at: new Date(),
         },
         {
           image: 'images/categories/image.png',
-          name: 'rafting',
-          slug: 'rafting',
+          name: `rafting_${Math.random() * 10}`,
+          slug: `rafting_${Math.random() * 10}`,
           is_active: true,
           created_at: new Date(),
           updated_at: new Date(),
