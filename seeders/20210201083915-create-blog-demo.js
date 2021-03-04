@@ -6,7 +6,9 @@ module.exports = {
         {
           image: 'images/blogs/image.png',
           title: 'Captain adventure memberikan diskon 70%',
-          slug: 'Captain-adventure-memberikan-diskon-70-percent',
+          slug: `Captain-adventure-memberikan-diskon-70-percent_${
+            Math.random() * 10
+          }`,
           perks: 'benefit 1, benefit 2, benefit, 3',
           short_description: 'deskripsi singkat, kaya rangkuman gitu',
           body: `
@@ -27,7 +29,9 @@ module.exports = {
         {
           image: 'images/blogs/image2.png',
           title: 'Rafting yang menyenangkan akan menghadirkan kedamaian',
-          slug: 'Rafting-yang-menyenangkan-akan-menghadirkan-kedamaian',
+          slug: `Rafting-yang-menyenangkan-akan-menghadirkan-kedamaian_${
+            Math.random() * 10
+          }`,
           body: `
 
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae aliquam velit. Morbi odio augue, sagittis ut orci ut, vehicula tristique metus. Duis vitae magna pharetra, maximus risus sit amet, fringilla arcu. Pellentesque blandit eu odio non ullamcorper. Cras viverra ipsum nec pellentesque egestas. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sollicitudin risus ac libero faucibus, ut consectetur elit auctor. Cras vel augue laoreet metus varius aliquam vel a enim. Ut iaculis augue sit amet tortor cursus, at interdum libero laoreet. Nunc quis ornare ipsum. Nullam vel nisi scelerisque, fermentum justo at, gravida sapien. Etiam non condimentum arcu. Integer nec elit finibus, lobortis metus vel, aliquam nisi.
