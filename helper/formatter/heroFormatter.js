@@ -2,7 +2,7 @@ const formatHero = (hero) => {
   const formatter = {
     id: hero.id,
     image: hero.image,
-    video: hero.video,
+    video: hero.video || null,
     title: hero.title,
     short_description: hero.short_description,
     is_active: hero.is_active,
