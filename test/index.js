@@ -23,7 +23,7 @@ describe('API Test for users resources', () => {
     chai
       .request(app)
       .post('/v1/users/session')
-      .send({email: 'om.ragil7@gmail.com', password: 'password'})
+      .send({email: 'admin@captain-adventure.com', password: 'Password@1902'})
       .end((err, res) => {
         token = res.body.data.token;
         expect(err).to.be.null;
