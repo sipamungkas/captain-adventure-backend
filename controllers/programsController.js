@@ -93,7 +93,6 @@ const getPrograms = async (req, res) => {
     );
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
@@ -163,7 +162,6 @@ const updateProgram = async (req, res) => {
     );
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
@@ -190,7 +188,6 @@ const deleteProgram = async (req, res) => {
     const response = formatRes(meta('Program deleted', 200, 'success'));
     return res.status(204).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,

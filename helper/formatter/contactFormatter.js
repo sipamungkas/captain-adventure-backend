@@ -1,9 +1,9 @@
 const formatContact = (contact) => {
   const formatter = {
-    id: contact.id,
-    value: contact.value,
-    link: contact.link,
-    category: contact.category,
+    id: contact.id ?? null,
+    value: contact.value ?? null,
+    link: contact.link ?? null,
+    category: contact.category ?? null,
   };
   return formatter;
 };

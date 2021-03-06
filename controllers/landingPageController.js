@@ -11,6 +11,7 @@ const {
   Blog,
   Gallery,
   Question,
+  Setting,
 } = require('../models');
 const {formatRes, meta} = require('../helper/formatter/responseFormatter');
 const {
@@ -30,6 +31,7 @@ const {
   formatGallery,
 } = require('../helper/formatter/galleryFormatter');
 const {formatBlogs, formatBlog} = require('../helper/formatter/blogFormatter');
+const {settingsData} = require('./utils');
 
 const base_url = process.env.BASEURL;
 
@@ -40,7 +42,7 @@ const home = async (req, res) => {
       where: {is_active: true},
       order: [['order', 'asc']],
     });
-
+    const settings = await settingsData();
     const programs = await Program.findAll({
       where: {is_active: true},
       order: [['updated_at', 'desc']],
@@ -50,6 +52,8 @@ const home = async (req, res) => {
 
     const contacts = await Contact.findAll();
     const data = {
+      seo: settings?.seo ?? {},
+      settings: settings?.settings ?? {},
       heros: formatHeros(heros).map(({id, ...hero}) => hero),
       programs: formatPrograms(programs.slice(0, 2)).map(
         ({id, ...program}) => program,
@@ -67,7 +71,6 @@ const home = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(meta('Service unavailable', 503, 'error'));
     return res.status(503).json(response);
   }
@@ -75,6 +78,7 @@ const home = async (req, res) => {
 
 const getCategories = async (req, res) => {
   try {
+    const settings = await settingsData();
     const categories = await Category.findAll({
       where: {is_active: true},
       include: 'packets',
@@ -85,6 +89,8 @@ const getCategories = async (req, res) => {
       order: [['updated_at', 'desc']],
     });
     const data = {
+      seo: settings?.seo ?? {},
+      settings: settings?.settings ?? {},
       categories: formatCategories(categories).map(({id, ...packet}) => packet),
       contacts: formatContacts(contacts),
       footer: formatFooter(formatContacts(contacts), programs),
@@ -96,7 +102,6 @@ const getCategories = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(meta('Service unavailable', 503, 'error'));
     return res.status(503).json(response);
   }
@@ -105,6 +110,7 @@ const getCategories = async (req, res) => {
 const getPacketsByCategory = async (req, res) => {
   try {
     const {slug} = req.params;
+    const settings = await settingsData();
     const packets = await Packet.findAll({
       include: 'category',
       where: {
@@ -121,6 +127,8 @@ const getPacketsByCategory = async (req, res) => {
       order: [['updated_at', 'desc']],
     });
     const data = {
+      seo: settings?.seo ?? {},
+      settings: settings?.settings ?? {},
       packets: formatPackets(packets).map(({id, ...packet}) => packet),
       contacts: formatContacts(contacts),
       footer: formatFooter(formatContacts(contacts), programs),
@@ -132,7 +140,6 @@ const getPacketsByCategory = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(meta('Service unavailable', 503, 'error'));
     return res.status(503).json(response);
   }
@@ -141,6 +148,7 @@ const getPacketsByCategory = async (req, res) => {
 const getPacketBySlug = async (req, res) => {
   try {
     const {slug} = req.params;
+    const settings = await settingsData();
     const packet = await Packet.findOne({
       include: 'category',
       where: {slug},
@@ -158,6 +166,8 @@ const getPacketBySlug = async (req, res) => {
       order: [['updated_at', 'desc']],
     });
     const data = {
+      seo: settings?.seo ?? {},
+      settings: settings?.settings ?? {},
       packet: formattedPacket,
       contacts: formatContacts(contacts),
       footer: formatFooter(formatContacts(contacts), programs),
@@ -169,7 +179,6 @@ const getPacketBySlug = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(meta('Service unavailable', 503, 'error'));
     return res.status(503).json(response);
   }
@@ -180,6 +189,7 @@ const getBlogs = async (req, res) => {
     let {perPage, page} = req.query;
     perPage = perPage !== undefined ? parseInt(perPage, 10) : 5;
     page = page !== undefined ? parseInt(page, 10) : 1;
+    const settings = await settingsData();
     const blogs = await Blog.findAndCountAll({
       offset: (page - 1) * perPage,
       limit: perPage,
@@ -191,6 +201,8 @@ const getBlogs = async (req, res) => {
       order: [['updated_at', 'desc']],
     });
     const data = {
+      seo: settings?.seo ?? {},
+      settings: settings?.settings ?? {},
       posts: formatBlogs(blogs.rows).map(({id, ...blog}) => blog),
       contacts: formatContacts(contacts),
       footer: formatFooter(formatContacts(contacts), programs),
@@ -228,7 +240,6 @@ const getBlogs = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(meta('Service unavailable', 503, 'error'));
     return res.status(503).json(response);
   }
@@ -237,6 +248,7 @@ const getBlogs = async (req, res) => {
 const getBlogBySlug = async (req, res) => {
   try {
     const {slug} = req.params;
+    const settings = await settingsData();
     const blog = await Blog.findOne({
       where: {slug},
     });
@@ -252,6 +264,8 @@ const getBlogBySlug = async (req, res) => {
       order: [['updated_at', 'desc']],
     });
     const data = {
+      seo: settings?.seo ?? {},
+      settings: settings?.settings ?? {},
       post: formattedBlog,
       contacts: formatContacts(contacts),
       footer: formatFooter(formatContacts(contacts), programs),
@@ -263,7 +277,6 @@ const getBlogBySlug = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(meta('Service unavailable', 503, 'error'));
     return res.status(503).json(response);
   }
@@ -274,6 +287,7 @@ const getGalleries = async (req, res) => {
     let {perPage, page} = req.query;
     perPage = perPage !== undefined ? parseInt(perPage, 10) : 5;
     page = page !== undefined ? parseInt(page, 10) : 1;
+    const settings = await settingsData();
     const galleries = await Gallery.findAndCountAll({
       offset: (page - 1) * perPage,
       limit: perPage,
@@ -286,6 +300,8 @@ const getGalleries = async (req, res) => {
     });
 
     const data = {
+      seo: settings?.seo ?? {},
+      settings: settings?.settings ?? {},
       galleries: formatGalleries(galleries.rows),
       contacts: formatContacts(contacts),
       footer: formatFooter(formatContacts(contacts), programs),
@@ -323,7 +339,6 @@ const getGalleries = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(meta('Service unavailable', 503, 'error'));
     return res.status(503).json(response);
   }
@@ -332,6 +347,7 @@ const getGalleries = async (req, res) => {
 const getGalleryById = async (req, res) => {
   try {
     const {id} = req.params;
+    const settings = await settingsData();
     const gallery = await Gallery.findByPk(id);
     if (gallery === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
@@ -343,6 +359,8 @@ const getGalleryById = async (req, res) => {
       order: [['updated_at', 'desc']],
     });
     const data = {
+      seo: settings?.seo ?? {},
+      settings: settings?.settings ?? {},
       packet: formatGallery(gallery),
       contacts: formatContacts(contacts),
       footer: formatFooter(formatContacts(contacts), programs),
@@ -354,7 +372,6 @@ const getGalleryById = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(meta('Service unavailable', 503, 'error'));
     return res.status(503).json(response);
   }
@@ -367,9 +384,17 @@ const getContacts = async (req, res) => {
       where: {is_active: true},
       order: [['updated_at', 'desc']],
     });
-
+    const fabWa = await Setting.findOne({where: {group: 'fab-wa'}});
+    const formattedFabWA = {
+      ...fabWa?.dataValues,
+      category: fabWa?.group ?? null,
+    };
+    const newContacts = [...contacts, formattedFabWA];
+    const mappedContacts = formatContacts(newContacts).map(
+      ({id, ...contact}) => contact,
+    );
     const data = {
-      contacts: formatContacts(contacts).map(({id, ...contact}) => contact),
+      contacts: mappedContacts,
       footer: formatFooter(formatContacts(contacts), programs),
     };
     const response = await formatRes(
@@ -379,7 +404,6 @@ const getContacts = async (req, res) => {
 
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(meta('Service unavailable', 503, 'error'));
     return res.status(503).json(response);
   }

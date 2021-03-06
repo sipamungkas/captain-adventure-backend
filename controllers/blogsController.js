@@ -109,7 +109,6 @@ const getBlogsPost = async (req, res) => {
     );
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
@@ -196,7 +195,6 @@ const updateBlogPost = async (req, res) => {
     );
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
@@ -223,7 +221,6 @@ const deleteBlogPost = async (req, res) => {
     const response = formatRes(meta('Blog post deleted', 200, 'success'));
     return res.status(204).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,

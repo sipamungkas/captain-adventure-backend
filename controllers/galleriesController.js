@@ -37,7 +37,6 @@ const createGallery = async (req, res) => {
     const response = formatRes(meta('Gallery created', 201, 'success'));
     return res.status(201).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
@@ -97,7 +96,6 @@ const getGalleries = async (req, res) => {
     );
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
@@ -163,7 +161,6 @@ const updateGallery = async (req, res) => {
     );
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
@@ -190,7 +187,6 @@ const deleteGallery = async (req, res) => {
     const response = formatRes(meta('Gallery deleted', 200, 'success'));
     return res.status(204).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,

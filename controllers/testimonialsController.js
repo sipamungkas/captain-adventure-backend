@@ -47,7 +47,6 @@ const createTestimonial = async (req, res) => {
     const response = formatRes(meta('Testimonial created', 201, 'success'));
     return res.status(201).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
@@ -105,7 +104,6 @@ const getTestimonials = async (req, res) => {
     );
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
@@ -180,7 +178,6 @@ const updateTestimonial = async (req, res) => {
     );
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
@@ -207,7 +204,6 @@ const deleteTestimonial = async (req, res) => {
     const response = formatRes(meta('Testimonial deleted', 200, 'success'));
     return res.status(204).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,

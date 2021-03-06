@@ -108,7 +108,6 @@ const getCategories = async (req, res) => {
     );
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,

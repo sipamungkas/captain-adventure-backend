@@ -27,7 +27,6 @@ const updateCreateSettings = async (req, res) => {
     const response = formatRes(meta('Data updated', 200, 'success'), settings);
     return res.status(200).json(response);
   } catch (error) {
-    console.log(error);
     const response = formatRes(
       meta('Service unavailable', 503, 'error'),
       error,
