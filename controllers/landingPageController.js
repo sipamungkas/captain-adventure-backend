@@ -11,7 +11,6 @@ const {
   Blog,
   Gallery,
   Question,
-  Setting,
 } = require('../models');
 const {formatRes, meta} = require('../helper/formatter/responseFormatter');
 const {
@@ -384,17 +383,11 @@ const getContacts = async (req, res) => {
       where: {is_active: true},
       order: [['updated_at', 'desc']],
     });
-    const fabWa = await Setting.findOne({where: {group: 'fab-wa'}});
-    const formattedFabWA = {
-      ...fabWa?.dataValues,
-      category: fabWa?.group ?? null,
-    };
-    const newContacts = [...contacts, formattedFabWA];
-    const mappedContacts = formatContacts(newContacts).map(
-      ({id, ...contact}) => contact,
-    );
+
     const data = {
-      contacts: mappedContacts,
+      contacts: formatContacts(contacts).map(
+        ({id, ...formattedContacts}) => formattedContacts,
+      ),
       footer: formatFooter(formatContacts(contacts), programs),
     };
     const response = await formatRes(

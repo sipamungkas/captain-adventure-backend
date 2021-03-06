@@ -8,9 +8,7 @@ const settingsData = async () => {
     const data = {
       seo: formatSettings(seo),
       settings: formatSettings(
-        settings.filter(
-          (setting) => setting.group !== 'meta' && setting.group !== 'fab-wa',
-        ),
+        settings.filter((setting) => setting.group !== 'meta'),
       ),
     };
     return data;
