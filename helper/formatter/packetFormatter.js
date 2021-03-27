@@ -11,9 +11,9 @@ const formatPacket = (packet) => {
     description: packet.description,
     is_active: packet.is_active,
     category: {
-      id: packet.category.id,
-      name: packet.category.name,
-      slug: packet.category.slug,
+      id: packet?.category?.id ?? null,
+      name: packet?.category?.name ?? 'uncategorized',
+      slug: packet?.category?.slug ?? null,
     },
   };
   return formatter;

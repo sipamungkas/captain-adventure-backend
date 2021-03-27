@@ -90,7 +90,9 @@ const getCategories = async (req, res) => {
     const data = {
       seo: settings?.seo ?? {},
       settings: settings?.settings ?? {},
-      categories: formatCategories(categories).map(({id, ...packet}) => packet),
+      categories: formatCategories(categories)
+        .map(({id, ...packet}) => packet)
+        .filter((packet) => packet.packets_count > 0),
       contacts: formatContacts(contacts),
       footer: formatFooter(formatContacts(contacts), programs),
     };

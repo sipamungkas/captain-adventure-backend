@@ -4,6 +4,7 @@ const {Hero} = require('../models');
 const {meta, formatRes} = require('../helper/formatter/responseFormatter');
 
 const {formatHero, formatHeros} = require('../helper/formatter/heroFormatter');
+const {formatNull} = require('../helper/utils');
 
 const createHero = async (req, res) => {
   try {
@@ -148,7 +149,7 @@ const updateHero = async (req, res) => {
     const newHero = {
       image: hero.image,
       order: order || hero.order,
-      video: video || hero.video,
+      video: formatNull(video),
       title: title || hero.title,
       short_description: short_description || hero.short_description,
     };
