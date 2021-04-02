@@ -42,7 +42,7 @@ module.exports = {
       },
       description: {
         allowNull: false,
-        type: Sequelize.TEXT,
+        type: Sequelize.TEXT('long'),
       },
       is_active: {
         allowNull: false,
