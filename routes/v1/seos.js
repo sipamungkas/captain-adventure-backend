@@ -7,6 +7,6 @@ const router = express.Router();
 
 router.get('/', authenticateToken, seosController.getSeoList);
 router.get('/:page', seosController.getSeoByPage);
-router.post('/:page', seosController.updateOrInsert);
+router.post('/:page', authenticateToken, seosController.updateOrInsert);
 
 module.exports = router;
