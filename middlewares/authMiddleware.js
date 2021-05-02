@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const {User} = require('../models');
 const {meta, formatRes} = require('../helper/formatter/responseFormatter');
 
 const jwtSecret = process.env.JWT_SECRET;
@@ -15,9 +14,7 @@ const authenticateToken = async (req, res, next) => {
     const {authorization} = req.headers;
     const bearer = authorization.split(' ');
     const token = bearer[1];
-    const decode = await jwt.verify(token, jwtSecret);
-
-    const user = await User.findByPk(decode.id);
+    const user = await jwt.verify(token, jwtSecret);
 
     if (user === null) {
       const response = formatRes(
