@@ -1,6 +1,6 @@
 const {Seo} = require('../models');
 const {formatRes, meta} = require('../helper/formatter/responseFormatter');
-const {formatSeos} = require('../helper/formatter/seoFormatter');
+const {formatSeos, formatSeo} = require('../helper/formatter/seoFormatter');
 
 const base_url = process.env.BASEURL;
 
@@ -61,4 +61,46 @@ const getSeoList = async (req, res) => {
   }
 };
 
-module.exports = {getSeoList};
+const getSeoByPage = async (req, res) => {
+  try {
+    const {page} = req.params;
+    const data = await Seo.findByPk(page);
+    if (data === null) {
+      const response = formatRes(meta('Page not found', 404, 'success'));
+      return res.status(404).json(response);
+    }
+    const response = formatRes(
+      meta('Seo Detail', 200, 'success'),
+      formatSeo(data),
+    );
+    return res.status(200).json(response);
+  } catch (error) {
+    const response = formatRes(
+      meta('Service unavailable', 503, 'error'),
+      error,
+    );
+    return res.status(503).json(response);
+  }
+};
+
+const updateOrInsert = async (req, res) => {
+  try {
+    const {page} = req.params;
+    const {title, description} = req.body;
+    const data = await Seo.upsert({page, title, description});
+    if (data === null) {
+      const response = formatRes(meta('Page not found', 404, 'success'));
+      return res.status(404).json(response);
+    }
+    const response = formatRes(meta('Seo Meta Created', 201, 'success'));
+    return res.status(200).json(response);
+  } catch (error) {
+    const response = formatRes(
+      meta('Service unavailable', 503, 'error'),
+      error,
+    );
+    return res.status(503).json(response);
+  }
+};
+
+module.exports = {getSeoList, getSeoByPage, updateOrInsert};

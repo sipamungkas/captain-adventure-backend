@@ -1,7 +1,7 @@
 const formatSeo = (seo) => {
   const formatter = {
     page: seo.page,
-    name: seo.name,
+    title: seo.title,
     description: seo.description,
   };
   return formatter;

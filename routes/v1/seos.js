@@ -6,5 +6,7 @@ const {authenticateToken} = require('../../middlewares/authMiddleware');
 const router = express.Router();
 
 router.get('/', authenticateToken, seosController.getSeoList);
+router.get('/:page', seosController.getSeoByPage);
+router.post('/:page', seosController.updateOrInsert);
 
 module.exports = router;
