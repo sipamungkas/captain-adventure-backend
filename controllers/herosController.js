@@ -8,7 +8,7 @@ const {formatNull} = require('../helper/utils');
 
 const createHero = async (req, res) => {
   try {
-    const {title, short_description, video} = req.body;
+    const {title, short_description, video, link} = req.body;
     let {order} = req.body;
     order = order || null;
 
@@ -18,6 +18,7 @@ const createHero = async (req, res) => {
       video,
       title,
       short_description,
+      link,
     };
     if (req.file) {
       newHero = {
@@ -26,6 +27,7 @@ const createHero = async (req, res) => {
         video,
         title,
         short_description,
+        link,
       };
     }
     const hero = await Hero.create(newHero);

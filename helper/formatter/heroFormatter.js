@@ -1,4 +1,5 @@
 const formatHero = (hero) => {
+  console.log(hero);
   const formatter = {
     id: hero.id,
     image: hero.image,
@@ -6,6 +7,7 @@ const formatHero = (hero) => {
     title: hero.title,
     short_description: hero.short_description,
     is_active: hero.is_active,
+    link: hero.link,
     order: hero.order,
   };
   return formatter;
