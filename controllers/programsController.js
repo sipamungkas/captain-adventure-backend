@@ -1,5 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
+const slugify = require('slugify');
+const {Op} = require('sequelize');
 const {Program} = require('../models');
 const {meta, formatRes} = require('../helper/formatter/responseFormatter');
 
@@ -12,8 +14,32 @@ const {
 const createProgram = async (req, res) => {
   try {
     const {title, perks, short_description, body} = req.body;
+    if (!req.file) {
+      const response = formatRes(meta(`Invalid image type`, 422, 'error'));
+      return res.status(422).json(response);
+    }
+
+    let slug = await slugify(title, {
+      replacement: '-',
+      lower: true,
+      strict: true,
+    });
+
+    if (slug === '') {
+      const response = formatRes(
+        meta('Please input alphabet and number character only', 422, 'error'),
+      );
+      return res.status(422).json(response);
+    }
+
+    const slugExists = await Program.findOne({where: {slug}});
+    if (slugExists) {
+      slug = `${slug}-${Math.floor(Math.random() * 1453 + 1)}`;
+    }
+
     let newProgram = {
       image: null,
+      slug,
       title,
       perks,
       short_description,
@@ -22,10 +48,7 @@ const createProgram = async (req, res) => {
     if (req.file) {
       newProgram = {
         image: `images/programs/${req.file.filename}`,
-        title,
-        perks,
-        short_description,
-        body,
+        ...newProgram,
       };
     }
     const post = await Program.create(newProgram);
@@ -104,14 +127,17 @@ const getPrograms = async (req, res) => {
 const getProgram = async (req, res) => {
   try {
     const {id} = req.params;
-    const post = await Program.findByPk(id);
-    if (post === null) {
+    const program = await Program.findOne({
+      where: {[Op.or]: [{id}, {slug: id}]},
+    });
+    if (program === null) {
       const response = formatRes(meta('Page not found', 404, 'success'));
       return res.status(404).json(response);
     }
+
     const response = formatRes(
       meta('Program details', 200, 'success'),
-      formatProgram(post),
+      formatProgram(program),
     );
     return res.status(200).json(response);
   } catch (error) {
@@ -133,8 +159,27 @@ const updateProgram = async (req, res) => {
       return res.status(404).json(response);
     }
 
+    let slug = await slugify(title, {
+      replacement: '-',
+      lower: true,
+      strict: true,
+    });
+    if (slug === '') {
+      const response = formatRes(
+        meta('Please input alphabet and number character only', 422, 'error'),
+      );
+      return res.status(422).json(response);
+    }
+
+    const slugExists = await Program.findOne({where: {slug}});
+
+    if (slugExists && slugExists.id !== program.id) {
+      slug = `${slug}-${Math.floor(Math.random() * 1453 + 1)}`;
+    }
+
     let newProgram = {
       image: program.image,
+      slug,
       title,
       perks,
       short_description,
@@ -149,10 +194,7 @@ const updateProgram = async (req, res) => {
       }
       newProgram = {
         image: `images/programs/${req.file.filename}`,
-        title,
-        perks,
-        short_description,
-        body,
+        ...newProgram,
       };
     }
     const updatedData = await program.update(newProgram);

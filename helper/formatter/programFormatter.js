@@ -3,6 +3,7 @@ const formatProgram = (program) => {
     id: program.id,
     image: program.image,
     title: program.title,
+    slug: program.slug,
     perks: program.perks,
     short_description: program.short_description,
     body: program.body,
