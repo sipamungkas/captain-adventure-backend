@@ -10,7 +10,11 @@ const v1Router = require('./routes/v1/index');
 const app = express();
 app.use(cors());
 
-app.use(logger('dev'));
+app.use(
+  logger('dev', {
+    skip: (req, res) => process.env.NODE_ENV === 'production',
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
