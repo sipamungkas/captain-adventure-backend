@@ -47,10 +47,11 @@ const createProgram = async (req, res) => {
     };
     if (req.file) {
       newProgram = {
-        image: `images/programs/${req.file.filename}`,
         ...newProgram,
+        image: `images/programs/${req.file.filename}`,
       };
     }
+
     const post = await Program.create(newProgram);
     if (post === null) {
       const response = formatRes(meta('Service unavailable', 503, 'error'));
@@ -193,8 +194,8 @@ const updateProgram = async (req, res) => {
         await fs.unlink(pathFile);
       }
       newProgram = {
-        image: `images/programs/${req.file.filename}`,
         ...newProgram,
+        image: `images/programs/${req.file.filename}`,
       };
     }
     const updatedData = await program.update(newProgram);
