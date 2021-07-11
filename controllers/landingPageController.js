@@ -19,7 +19,10 @@ const {
 const {formatFooter} = require('../helper/formatter/landingPageFormatter');
 const {formatContacts} = require('../helper/formatter/contactFormatter');
 const {formatHeros} = require('../helper/formatter/heroFormatter');
-const {formatPrograms} = require('../helper/formatter/programFormatter');
+const {
+  formatPrograms,
+  formatProgram,
+} = require('../helper/formatter/programFormatter');
 const {formatCategories} = require('../helper/formatter/categoryFormatter');
 const {
   formatPackets,
@@ -421,6 +424,71 @@ const sendQuestion = async (req, res) => {
   }
 };
 
+const getPrograms = async (req, res) => {
+  try {
+    const settings = await settingsData();
+    const contacts = await Contact.findAll();
+    const programs = await Program.findAll({
+      where: {is_active: true},
+      order: [['updated_at', 'desc']],
+    });
+    const data = {
+      seo: settings?.seo ?? {},
+      settings: settings?.settings ?? {},
+      programs: formatPrograms(programs).map(({id, ...program}) => program),
+      contacts: formatContacts(contacts),
+      footer: formatFooter(formatContacts(contacts), programs),
+    };
+    const response = await formatRes(
+      meta('List of Programs', 200, 'success'),
+      data,
+    );
+
+    return res.status(200).json(response);
+  } catch (error) {
+    const response = formatRes(meta('Service unavailable', 503, 'error'));
+    return res.status(503).json(response);
+  }
+};
+
+const getProgram = async (req, res) => {
+  try {
+    const {slug} = req.params;
+    const settings = await settingsData();
+    const contacts = await Contact.findAll();
+    const programs = await Program.findAll({
+      where: {is_active: true},
+      order: [['updated_at', 'desc']],
+    });
+    const program = await Program.findOne({
+      where: {slug},
+    });
+
+    if (!program) {
+      const response = await formatRes(
+        meta('Program detail not found', 404, 'success'),
+      );
+      return res.status(404).json(response);
+    }
+    const data = {
+      seo: settings?.seo ?? {},
+      settings: settings?.settings ?? {},
+      program: formatProgram(program),
+      contacts: formatContacts(contacts),
+      footer: formatFooter(formatContacts(contacts), programs),
+    };
+    const response = await formatRes(
+      meta('Programs detail', 200, 'success'),
+      data,
+    );
+
+    return res.status(200).json(response);
+  } catch (error) {
+    const response = formatRes(meta('Service unavailable', 503, 'error'));
+    return res.status(503).json(response);
+  }
+};
+
 module.exports = {
   home,
   getCategories,
@@ -432,4 +500,6 @@ module.exports = {
   getGalleryById,
   getContacts,
   sendQuestion,
+  getPrograms,
+  getProgram,
 };

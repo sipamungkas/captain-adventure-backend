@@ -18,5 +18,7 @@ router.post(
   sendQuestionRules,
   landingPageController.sendQuestion,
 );
+router.get('/programs', landingPageController.getPrograms);
+router.get('/programs/:slug', landingPageController.getProgram);
 
 module.exports = router;
