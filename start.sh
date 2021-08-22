@@ -30,5 +30,5 @@ then
   echo -e "stage\t\t\tproject-staging"
   echo -e "dev\t\tproject-development"
 else
-  echo "Run ‘prepare-env.sh env’ to list available environments."
+  echo "Run start.sh env’ to list available environments."
 fi
