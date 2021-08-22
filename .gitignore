@@ -67,3 +67,4 @@ public/files/
 
 # db
 db
+sequelize_data_*

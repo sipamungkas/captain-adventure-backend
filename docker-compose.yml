@@ -3,7 +3,7 @@ services:
   captain_api:
     restart: always
     image: node:14.16.0-alpine
-    command: > 
+    command: >
       sh -c "
             NODE_ENV=${NODE_ENV} npm install && 
             NODE_ENV=${NODE_ENV} npm run db:createTable && 
@@ -20,11 +20,12 @@ services:
       - 'captain_db'
 
   captain_db:
+    image: mariadb:10.6
     restart: always
-    image: mysql:5.7
     ports:
       - 3306:3306
     volumes:
-      - $HOME/db/captain-adventure/data:/var/lib/mysql
+      - ./db/data:/var/lib/mysql
+      - ./config/mariadb:/etc/mysql/conf.d
     environment:
       MYSQL_ROOT_PASSWORD: alfatih1453
