@@ -67,4 +67,4 @@ public/files/
 
 # db
 db
-sequelize_data_*
+sequelize_data_*.json
