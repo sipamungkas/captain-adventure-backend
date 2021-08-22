@@ -5,6 +5,9 @@ module.exports = {
     database: `${process.env.DB_NAME}_dev` || 'database_development',
     host: process.env.DB_HOST || '127.0.0.1',
     dialect: 'mysql',
+    seederStorage: 'json',
+    seederStoragePath: 'sequelize_data_development.json',
+    seederStorageTableName: 'sequelize_data',
   },
   test: {
     username: process.env.DB_USERNAME || 'root',
@@ -12,6 +15,9 @@ module.exports = {
     database: `${process.env.DB_NAME}_test` || 'database_test',
     host: process.env.DB_HOST || '127.0.0.1',
     dialect: 'mysql',
+    seederStorage: 'json',
+    seederStoragePath: 'sequelize_data_test.json',
+    seederStorageTableName: 'sequelize_data',
   },
   production: {
     username: process.env.DB_USERNAME || 'root',
@@ -19,6 +25,9 @@ module.exports = {
     database: process.env.DB_NAME || 'database_production',
     host: process.env.DB_HOST || '127.0.0.1',
     dialect: 'mysql',
+    seederStorage: 'json',
+    seederStoragePath: 'sequelize_data_production.json',
+    seederStorageTableName: 'sequelize_data',
     logging: false,
   },
 };

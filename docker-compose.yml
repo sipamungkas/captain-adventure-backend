@@ -3,7 +3,14 @@ services:
   captain_api:
     restart: always
     image: node:14.16.0-alpine
-    command: sh -c "NODE_ENV=production npm install --production && npm start"
+    command: > 
+      sh -c "
+            NODE_ENV=${NODE_ENV} npm install && 
+            NODE_ENV=${NODE_ENV} npm run db:createTable && 
+            NODE_ENV=${NODE_ENV} npm run db:migrate && 
+            NODE_ENV=${NODE_ENV} npm run db:seed && 
+            NODE_ENV=${NODE_ENV} npm start"
+
     ports:
       - 3000:3000
     working_dir: /app
@@ -11,9 +18,12 @@ services:
       - ./:/app
     depends_on:
       - 'captain_db'
+
   captain_db:
     restart: always
     image: mysql:5.7
+    ports:
+      - 3306:3306
     volumes:
       - $HOME/db/captain-adventure/data:/var/lib/mysql
     environment:
