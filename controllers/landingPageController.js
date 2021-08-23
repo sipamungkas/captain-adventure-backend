@@ -57,9 +57,7 @@ const home = async (req, res) => {
       seo: settings?.seo ?? {},
       settings: settings?.settings ?? {},
       heros: formatHeros(heros).map(({id, ...hero}) => hero),
-      programs: formatPrograms(programs.slice(0, 2)).map(
-        ({id, ...program}) => program,
-      ),
+      programs: formatPrograms(programs).map(({id, ...program}) => program),
       testimonials: formatTestimonials(testimonials).map(
         ({id, ...testimonial}) => testimonial,
       ),
